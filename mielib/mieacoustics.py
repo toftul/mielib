@@ -2,7 +2,7 @@ import numpy as np
 import scipy.special as sp
 from mielib import extraspecial
 
-def acoustics_Mie_a(n, ka, rho1, beta1):
+def acoustics_mie_a(n, ka, rho1, beta1):
     """
         n - multipole order
         ka - size parameter in host media
@@ -36,7 +36,7 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50)
     sigma_sc_n = np.zeros([nmax+1 - nmin, ka.size])
     
     for n in range(nmin, nmax+1):
-        an = acoustics_Mie_a(n, ka, rho_rel, beta_rel)
+        an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
         sigma_sc_n[n, :] = 4*np.pi / k**2 * (2*n+1) * np.abs(an**2)
         
     sigma_sc = np.sum(sigma_sc_n, axis=0)
