@@ -1,2 +1,2 @@
-from extraspecial import *
-from mieacoustics import *
+from .extraspecial import *
+from .mieacoustics import *

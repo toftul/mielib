@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.special as sp
-from src import extraspecial
+from mielib import extraspecial
 
 def acoustics_Mie_a(n, ka, rho1, beta1):
     """
