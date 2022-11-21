@@ -3,7 +3,7 @@ import numpy as np
 from mielib import extraspecial
 
 
-def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
+def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     """
         Electric Mie coefficent. For detatails see Bohren p. 100
 
@@ -26,10 +26,14 @@ def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
     xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
 
-    return (m**2 * jnmx * xjnx_p - mu * jnx * mxjnmx_p) / (m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p)
+    if get_denominator:
+        # for dispersion of TM modes
+        return m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p
+    else:
+        return (m**2 * jnmx * xjnx_p - mu * jnx * mxjnmx_p) / (m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p)
 
 
-def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
+def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     """
         Electric Mie coefficent. For detatails see Bohren p. 100
 
@@ -52,7 +56,11 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
     xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
     
-    return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
+    if get_denominator:
+        # for dispertion of TE modes
+        return mu * jnmx * xh1nx_p - h1nx * mxjnmx_p
+    else:
+        return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
 
 
 def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
