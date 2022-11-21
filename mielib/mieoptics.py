@@ -53,3 +53,27 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     xh1nx_p = h1nx + x * extraspecial.spherical_h1p(n, x, p=0)
     
     return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
+
+
+def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+    k0a = np.asarray(k0 * a)
+
+    n_host = np.sqrt(eps_h * mu_h)
+
+    sigma_norm = 1.0
+    if norm == 'geom':
+        sigma_norm = np.pi * a**2
+
+    sigma_sc   = np.zeros(k0a.size, dtype=np.float64)
+    sigma_sc_n = np.zeros([nmax+1 - nmin, k0a.size], dtype=np.float64)
+
+    for n in range(nmin, nmax+1):
+        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        sigma_sc_n[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * (np.abs(an**2) + np.abs(bn)**2)
+        
+    sigma_sc = np.sum(sigma_sc_n, axis=0)
+
+    return sigma_sc/sigma_norm, sigma_sc_n/sigma_norm
+
+
