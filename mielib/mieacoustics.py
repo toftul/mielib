@@ -15,9 +15,8 @@ def acoustics_mie_a(n, ka, rho1, beta1):
     jn = sp.spherical_jn(n, ka)
     jn1p = sp.spherical_jn(n, k1a, 1)
     jnp = sp.spherical_jn(n, ka, 1)
-    extraspecial.spherical_h1(n, ka)
     hn = extraspecial.spherical_h1(n, ka)
-    hnp = extraspecial.spherical_h1p(n, ka)
+    hnp = extraspecial.spherical_h1(n, ka, p=1)
     up = (gamma * jn1p * jn - jn1 * jnp)
     down = (jn1 * hnp - gamma * jn1p * hn)
     
