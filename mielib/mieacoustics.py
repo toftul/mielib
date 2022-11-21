@@ -29,9 +29,13 @@ def acoustics_mie_a(n, ka, rho1, beta1):
     return ans
     
     
-def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50):
+def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, norm='none'):
     ka = a * k
     
+    sigma_norm = 1.0
+    if norm == 'geom':
+        sigma_norm = np.pi * a**2
+
     sigma_sc = np.zeros(ka.size, dtype=np.float64)
     sigma_sc_n = np.zeros([nmax+1 - nmin, ka.size])
     
@@ -41,4 +45,4 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50)
         
     sigma_sc = np.sum(sigma_sc_n, axis=0)
     
-    return sigma_sc, sigma_sc_n
+    return sigma_sc/sigma_norm, sigma_sc_n/sigma_norm
