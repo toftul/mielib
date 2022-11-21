@@ -50,7 +50,7 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     h1nx = extraspecial.spherical_h1(n, x)
     xjnx_p = jnx + x * sp.spherical_jn(n, x, 1)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * extraspecial.spherical_h1p(n, x, p=0)
+    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
     
     return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
 
