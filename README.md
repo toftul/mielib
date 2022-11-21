@@ -7,6 +7,16 @@ Library which contains many Mie-ralated functions in optics and acoustics. In pa
 - Scalar spherical harmonics
 - Vector spherical harmonics (complex and real)
 
+## Instalation
+
+From [PYPI/mielib](https://pypi.org/project/mielib/):
+```
+pip install mielib
+```
+
+## Examples
+
+See examples folder with Jupyter Notebooks.
 
 ## Credits
 Ivan Toftul 
