@@ -3,8 +3,28 @@ import scipy.special as sp
 
 from mielib import extraspecial
 
+def spherical_radial_function_z(j, rho, p=0, superscript=1):
+    """
+        j - radial quantum number
+        rho - argument
+        p = 0,1 - derivative order
+        superscript - type of radial function
+    """
+    zj = np.array([0.0j])
+    match superscript:
+        case 1:
+            zj = sp.spherical_jn(j, rho, p)
+        case 2:
+            zj = sp.spherical_yn(j, rho, p)
+        case 3:
+            zj = extraspecial.spherical_h1(j, rho, p)
+        case 4:
+            zj = extraspecial.spherical_h2(j, rho, p)
 
-def VSH_bohren_Me_mn(m, n, rho, theta, phi, superscript):
+    return zj
+
+        
+def vsh_bohren_me(m, n, rho, theta, phi, superscript):
     '''
         vector Harmonics in spherical coordinates (r, θ, φ)
         from Bohren & Huffman, eq. (4.17), (4.18)
@@ -29,28 +49,7 @@ def VSH_bohren_Me_mn(m, n, rho, theta, phi, superscript):
     Mt = 0.0
     Mp = 0.0
 
-    zn = np.asarray(0.0)
-    zn = np.where(
-        superscript == 1,
-        sp.spherical_jn(n, rho),
-        extraspecial.spherical_h1(n, rho)
-    )
-    """
-    if superscript == 1:
-        # zn = jn -- spherical Bessel 1st kind
-        zn = spherical_jn(n, rho)
-    elif superscript == 2:
-        # zn = yn -- sherical Bessel 2nd kind
-        zn = spherical_yv(n, rho)
-    elif superscript == 3:
-        # zn = h(1) -- spherical Hankel 1st
-        zn = spherical_h1(n, rho)
-    elif superscript == 4:
-        # zn = h(2) -- spherical Hankel 2nd
-        zn = spherical_h2(n, rho)
-    else:
-        print("ERROR: Superscript invalid!")
-    """
+    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
 
     Mt = -m / np.sin(theta) * np.sin(m * phi) * sp.lpmv(m, n, np.cos(theta))
 
@@ -71,7 +70,7 @@ def VSH_bohren_Me_mn(m, n, rho, theta, phi, superscript):
     return np.array([Mr, Mt*zn, Mp*zn])
 
 
-def VSH_bohren_Mo_mn(m, n, rho, theta, phi, superscript):
+def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
     '''
         vector Harmonics in spherical coordinates (r, θ, φ)
         from Bohren & Huffman, eq. (4.17), (4.18)
@@ -96,25 +95,7 @@ def VSH_bohren_Mo_mn(m, n, rho, theta, phi, superscript):
     Mt = 0.0
     Mp = 0.0
 
-    zn = np.asarray(0.0)
-    zn = np.where(superscript == 1, sp.spherical_jn(
-        n, rho), extraspecial.spherical_h1(n, rho))
-    """
-    if superscript == 1:
-        # zn = jn -- spherical Bessel 1st kind
-        zn = spherical_jn(n, rho)
-    elif superscript == 2:
-        # zn = yn -- sherical Bessel 2nd kind
-        zn = spherical_yn(n, rho)
-    elif superscript == 3:
-        # zn = h(1) -- spherical Hankel 1st
-        zn = spherical_h1(n, rho)
-    elif superscript == 4:
-        # zn = h(2) -- spherical Hankel 2nd
-        zn = spherical_h2(n, rho)
-    else:
-        print("ERROR: Superscript invalid!")
-    """
+    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
 
     Mt = m / np.sin(theta) * np.cos(m * phi) * sp.lpmv(m, n, np.cos(theta))
 
@@ -135,7 +116,7 @@ def VSH_bohren_Mo_mn(m, n, rho, theta, phi, superscript):
     return np.array([Mr, Mt*zn, Mp*zn])
 
 
-def VSH_bohren_Ne(m, n, rho, theta, phi, superscript):
+def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
     '''
         vector Harmonics in spherical coordinates (r, θ, φ)
         from Bohren & Huffman, eq. (4.19), (4.20)
@@ -161,35 +142,8 @@ def VSH_bohren_Ne(m, n, rho, theta, phi, superscript):
     Nt = 0.0
     Np = 0.0
 
-    zn = np.asarray(0.0)
-    znp = np.asarray(0.0)
-    zn = np.where(superscript == 1, sp.spherical_jn(
-        n, rho), extraspecial.spherical_h1(n, rho))
-    znp = np.where(superscript == 1, sp.spherical_jn(
-        n, rho, 1), extraspecial.spherical_h1p(n, rho))
-
-    """
-    zn = 0
-    znp = 0
-    if superscript == 1:
-        # zn = jn -- spherical Bessel 1st kind
-        zn = spherical_jn(n, rho)
-        znp = spherical_jn(n, rho, 1)
-    elif superscript == 2:
-        # zn = yn -- sherical Bessel 2nd kind
-        zn = spherical_yn(n, rho)
-        znp = spherical_yn(n, rho, 1)
-    elif superscript == 3:
-        # zn = h(1) -- spherical Hankel 1st
-        zn = spherical_h1(n, rho)
-        znp = spherical_h1p(n, rho)
-    elif superscript == 4:
-        # zn = h(2) -- spherical Hankel 2nd
-        zn = spherical_h2(n, rho)
-        znp = spherical_h2p(n, rho)
-    else:
-        print("ERROR: Superscript invalid!")
-    """
+    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
 
     Pnm = sp.lpmv(m, n, np.cos(theta))
 
@@ -210,7 +164,7 @@ def VSH_bohren_Ne(m, n, rho, theta, phi, superscript):
     return np.array([Nr, Nt, Np])
 
 
-def VSH_bohren_No(m, n, rho, theta, phi, superscript=1):
+def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
     '''
         vector Harmonics in spherical coordinates (r, θ, φ)
         from Bohren & Huffman, eq. (4.19), (4.20)
@@ -236,35 +190,8 @@ def VSH_bohren_No(m, n, rho, theta, phi, superscript=1):
     Nt = 0.0
     Np = 0.0
 
-    zn = np.asarray(0.0)
-    znp = np.asarray(0.0)
-    zn = np.where(superscript == 1, sp.spherical_jn(
-        n, rho), extraspecial.spherical_h1(n, rho))
-    znp = np.where(superscript == 1, sp.spherical_jn(
-        n, rho, 1), extraspecial.spherical_h1p(n, rho))
-
-    """
-    zn = 0
-    znp = 0
-    if superscript == 1:
-        # zn = jn -- spherical Bessel 1st kind
-        zn = spherical_jn(n, rho)
-        znp = spherical_jn(n, rho, 1)
-    elif superscript == 2:
-        # zn = yn -- sherical Bessel 2nd kind
-        zn = spherical_yn(n, rho)
-        znp = spherical_yn(n, rho, 1)
-    elif superscript == 3:
-        # zn = h(1) -- spherical Hankel 1st
-        zn = spherical_h1(n, rho)
-        znp = spherical_h1p(n, rho)
-    elif superscript == 4:
-        # zn = h(2) -- spherical Hankel 2nd
-        zn = spherical_h2(n, rho)
-        znp = spherical_h2p(n, rho)
-    else:
-        print("ERROR: Superscript invalid!")
-    """
+    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
 
     Pnm = sp.lpmv(m, n, np.cos(theta))
 
@@ -285,7 +212,7 @@ def VSH_bohren_No(m, n, rho, theta, phi, superscript=1):
     return np.array([Nr, Nt, Np])
 
 
-def VSH_jackson_X(m, n, theta, phi):
+def vsh_jackson_x(m, n, theta, phi):
     '''
         from Jackson's book paragraph 9.7
     '''
@@ -303,7 +230,7 @@ def VSH_jackson_X(m, n, theta, phi):
     ])
 
 
-def VSH_toftul_M(m, j, rho, theta, phi, superscript=3):
+def vsh_toftul_m(m, j, rho, theta, phi, superscript=3):
     """ 
         M vector spherical harmonic
 
@@ -324,29 +251,23 @@ def VSH_toftul_M(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zn = np.asarray(0.0)
+    zj = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
 
-    zn = np.where(
-        superscript == 1,
-        sp.spherical_jn(j, rho),
-        extraspecial.spherical_h1(j, rho)
-    )
-
-    Mt = 1j * m / np.sin(theta) * zn * sp.sph_harm(m, j, phi, theta)
+    Mt = 1j * m / np.sin(theta) * zj * sp.sph_harm(m, j, phi, theta)
 
     dYmn = m/np.tan(theta) * sp.sph_harm(m, j, phi, theta)
     if m+1 <= j:
         # sqrt((-m + j) (1 + m + j)) = np.sqrt(sp.gamma(1-m+j)) * np.sqrt(sp.gamma(2+m+j)) / (np.sqrt(sp.gamma(-m+j)) * np.sqrt(sp.gamma(1+m+j)))
         dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
 
-    Mp = -zn * dYmn
+    Mp = -zj * dYmn
 
     Mr = np.zeros(np.shape(Mp))
 
     return np.array([Mr, Mt, Mp])
 
 
-def VSH_toftul_N(m, j, rho, theta, phi, superscript=3):
+def vsh_toftul_n(m, j, rho, theta, phi, superscript=3):
     """ 
         N vector spherical harmonic
 
@@ -367,19 +288,8 @@ def VSH_toftul_N(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zn = np.asarray(0.0)
-    znp = np.asarray(0.0)
-
-    zn = np.where(
-        superscript == 1,
-        sp.spherical_jn(j, rho),
-        extraspecial.spherical_h1(j, rho)
-    )
-    znp = np.where(
-        superscript == 1,
-        sp.spherical_jn(j, rho, 1),
-        extraspecial.spherical_h1p(j, rho)
-    )
+    zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
+    zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
 
     Ymn = sp.sph_harm(m, j, phi, theta)
     dYmn = m/np.tan(theta) * Ymn
@@ -387,14 +297,14 @@ def VSH_toftul_N(m, j, rho, theta, phi, superscript=3):
         # sqrt((-m + j) (1 + m + j)) = np.sqrt(sp.gamma(1-m+j)) * np.sqrt(sp.gamma(2+m+j)) / (np.sqrt(sp.gamma(-m+j)) * np.sqrt(sp.gamma(1+m+j)))
         dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
 
-    Nr = j*(j+1) * zn/rho * Ymn
-    Nt = 1/rho * (zn + rho * znp) * dYmn
-    Np = 1j*m/np.sin(theta) * 1/rho * (zn + rho * znp) * Ymn
+    Nr = j*(j+1) * zj/rho * Ymn
+    Nt = 1/rho * (zj + rho * zjp) * dYmn
+    Np = 1j*m/np.sin(theta) * 1/rho * (zj + rho * zjp) * Ymn
 
     return np.array([Nr, Nt, Np])
 
 
-def VSH_toftul_L(m, j, rho, theta, phi, superscript=3):
+def vsh_toftul_l(m, j, rho, theta, phi, superscript=3):
     """ 
         L vector spherical harmonic
 
@@ -415,39 +325,28 @@ def VSH_toftul_L(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zn = np.asarray(0.0)
-    znp = np.asarray(0.0)
+    zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
+    zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
 
-    zn = np.where(
-        superscript == 1,
-        sp.spherical_jn(n, rho),
-        extraspecial.spherical_h1(n, rho)
-    )
-    znp = np.where(
-        superscript == 1,
-        sp.spherical_jn(n, rho, 1),
-        extraspecial.spherical_h1p(n, rho)
-    )
-
-    Ymn = sp.sph_harm(m, n, phi, theta)
+    Ymn = sp.sph_harm(m, j, phi, theta)
     dYmn = m/np.tan(theta) * Ymn
-    if m+1 <= n:
+    if m+1 <= j:
         # sqrt((-m + n) (1 + m + n)) = np.sqrt(sp.gamma(1-m+n)) * np.sqrt(sp.gamma(2+m+n)) / (np.sqrt(sp.gamma(-m+n)) * np.sqrt(sp.gamma(1+m+n)))
-        dYmn += np.exp(-1j*phi) * np.sqrt((-m + n)*(1 + m + n)) * sp.sph_harm(m+1, n, phi, theta)
+        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
 
-    Lr = znp * Ymn
-    Lt = zn/rho * dYmn
-    Lp = 1j*m/np.sin(theta) * zn/rho * Ymn
+    Lr = zjp * Ymn
+    Lt = zj/rho * dYmn
+    Lp = 1j*m/np.sin(theta) * zj/rho * Ymn
 
     return np.array([Lr, Lt, Lp])
 
 
 # wrapper functions
-def VSH_M(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
+def vector_spherical_harmonic_m(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
     """ 
-        M vector spherical harmonic
+        vector spherical harmonic
 
-        Arguments:
+        arguments:
             m - projection of total angular momentum 
             j - total angular momentum
             rho, theta, phi - arguments in spherical coordinate system
@@ -455,24 +354,48 @@ def VSH_M(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
                 1 - spherical bessel
                 3 - spherical hankel1
             source:
-                'toftul' - based on SM arxiv.org/abs/2210.04021
-                'bohren' - based on Bohren & Huffmann book
-            partiy:
+                'toftul' - based on sm arxiv.org/abs/2210.04021
+                'bohren' - based on bohren & huffmann book
+            partiy (applicapble only for real vsh):
                 'even' - even harmonic
                 'odd' - odd harmonic
     """
-    match book:
+    match source:
         case 'toftul':
-            return VSH_toftul_M(m, j, rho, theta, phi, superscript=superscript)
+            return vsh_toftul_m(m, j, rho, theta, phi, superscript=superscript)
         case 'bohren':
             match parity:
                 case 'even':
-                    return VSH_bohren_Me(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
+                    return vsh_bohren_me(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
                 case 'odd':
-                    return VSH_bohren_Mo(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
+                    return vsh_bohren_mo(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
                 case _:
                     return np.array([0.0, 0.0, 0.0])
         case _:
             return np.array([0.0, 0.0, 0.0])
      
 
+
+def vector_spherical_harmonic_n(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
+    """ 
+        vector spherical harmonic
+
+        arguments:
+            m - projection of total angular momentum 
+            j - total angular momentum
+            rho, theta, phi - arguments in spherical coordinate system
+            superscript:
+                1 - spherical bessel
+                3 - spherical hankel1
+            source:
+                'toftul' - based on sm arxiv.org/abs/2210.04021
+                'bohren' - based on bohren & huffmann book
+            partiy (applicapble only for real vsh):
+                'even' - even harmonic
+                'odd' - odd harmonic
+    """
+    match source:
+        case 'toftul':
+            return vsh_toftul_n(m, j, rho, theta, phi, superscript=superscript)
+        case _:
+            return np.array([0.0, 0.0, 0.0])

@@ -1,12 +1,8 @@
 import scipy.special as sp
 
 
-def spherical_h1(n, z):
-    return sp.spherical_jn(n, z) + 1j * sp.spherical_yn(n, z)
-
-
-def spherical_h1p(n, z):
-    return sp.spherical_jn(n, z, 1) + 1j * sp.spherical_yn(n, z, 1)
+def spherical_h1(n, z, p=0):
+    return sp.spherical_jn(n, z, p) + 1j * sp.spherical_yn(n, z, p)
 
 
 def spherical_jnpp(n, z):
@@ -24,9 +20,5 @@ def spherical_h1pp(n, z):
     return spherical_jnpp(n, z) + 1j * spherical_ynpp(n, z)
 
 
-def spherical_h2(n, z):
-    return sp.spherical_jn(n, z) - 1j * sp.spherical_yn(n, z)
-
-
-def spherical_h2p(n, z):
-    return sp.spherical_jn(n, z, 1) - 1j * sp.spherical_yn(n, z, 1)
+def spherical_h2(n, z, p):
+    return sp.spherical_jn(n, z, p) - 1j * sp.spherical_yn(n, z, p)

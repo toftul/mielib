@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "mielib"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Ivan Toftul <toftul.ivan@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+scipy = "^1.9.3"
 
 
 [build-system]

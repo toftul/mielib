@@ -1,9 +1,6 @@
 import scipy.special as sp
 import numpy as np
-from mielib.extraspecial import (
-    spherical_h1,
-    spherical_h1p
-)
+from mielib import extraspecial
 
 
 def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
@@ -24,10 +21,10 @@ def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
     jnx = sp.spherical_jn(n, x)
-    h1nx = spherical_h1(n, x)
+    h1nx = extraspecial.spherical_h1(n, x)
     xjnx_p = jnx + x * sp.spherical_jn(n, x, 1)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * spherical_h1p(n, x)
+    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
 
     return (m**2 * jnmx * xjnx_p - mu * jnx * mxjnmx_p) / (m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p)
 
@@ -50,9 +47,9 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
     jnx = sp.spherical_jn(n, x)
-    h1nx = spherical_h1(n, x)
+    h1nx = extraspecial.spherical_h1(n, x)
     xjnx_p = jnx + x * sp.spherical_jn(n, x, 1)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * spherical_h1p(n, x)
+    xh1nx_p = h1nx + x * extraspecial.spherical_h1p(n, x, p=0)
     
     return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
