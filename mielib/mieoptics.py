@@ -77,3 +77,46 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     return sigma_sc/sigma_norm, sigma_sc_n/sigma_norm
 
 
+
+def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+    k0a = np.asarray(k0 * a)
+
+    n_host = np.sqrt(eps_h * mu_h)
+
+    sigma_norm = 1.0
+    if norm == 'geom':
+        sigma_norm = np.pi * a**2
+
+    sigma_ext   = np.zeros(k0a.size, dtype=np.float64)
+    sigma_ext_n = np.zeros([nmax+1 - nmin, k0a.size], dtype=np.float64)
+
+    for n in range(nmin, nmax+1):
+        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        sigma_ext_n[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * (np.real(an) + np.real(bn))
+        
+    sigma_ext = np.sum(sigma_ext_n, axis=0)
+
+    return sigma_ext/sigma_norm, sigma_ext_n/sigma_norm
+
+
+def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+    k0a = np.asarray(k0 * a)
+
+    n_host = np.sqrt(eps_h * mu_h)
+
+    sigma_norm = 1.0
+    if norm == 'geom':
+        sigma_norm = np.pi * a**2
+
+    sigma_abs   = np.zeros(k0a.size, dtype=np.float64)
+    sigma_abs_n = np.zeros([nmax+1 - nmin, k0a.size], dtype=np.float64)
+
+    for n in range(nmin, nmax+1):
+        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        sigma_abs_n[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * (np.real(an) - np.abs(an)**2 + np.real(bn) - np.abs(bn)**2)
+        
+    sigma_abs = np.sum(sigma_abs_n, axis=0)
+
+    return sigma_abs/sigma_norm, sigma_abs_n/sigma_norm
