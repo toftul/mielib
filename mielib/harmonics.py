@@ -399,3 +399,28 @@ def vector_spherical_harmonic_n(m, j, rho, theta, phi, superscript=3, source='to
             return vsh_toftul_n(m, j, rho, theta, phi, superscript=superscript)
         case _:
             return np.array([0.0, 0.0, 0.0])
+
+
+def vector_spherical_harmonic_l(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
+    """ 
+        vector spherical harmonic
+
+        arguments:
+            m - projection of total angular momentum 
+            j - total angular momentum
+            rho, theta, phi - arguments in spherical coordinate system
+            superscript:
+                1 - spherical bessel
+                3 - spherical hankel1
+            source:
+                'toftul' - based on sm arxiv.org/abs/2210.04021
+                'bohren' - based on bohren & huffmann book
+            partiy (applicapble only for real vsh):
+                'even' - even harmonic
+                'odd' - odd harmonic
+    """
+    match source:
+        case 'toftul':
+            return vsh_toftul_l(m, j, rho, theta, phi, superscript=superscript)
+        case _:
+            return np.array([0.0, 0.0, 0.0])
