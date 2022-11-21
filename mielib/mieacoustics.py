@@ -36,9 +36,9 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50,
         sigma_norm = np.pi * a**2
 
     sigma_sc = np.zeros(ka.size, dtype=np.float64)
-    sigma_sc_n = np.zeros([nmax+1 - nmin, ka.size])
+    sigma_sc_n = np.zeros([nmax, ka.size])
     
-    for n in range(nmin, nmax+1):
+    for n in range(nmin, nmax):
         an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
         sigma_sc_n[n, :] = 4*np.pi / k**2 * (2*n+1) * np.abs(an**2)
         
@@ -55,9 +55,9 @@ def acoustics_extinction_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50,
         sigma_norm = np.pi * a**2
 
     sigma_ext = np.zeros(ka.size, dtype=np.float64)
-    sigma_ext_n = np.zeros([nmax+1 - nmin, ka.size])
+    sigma_ext_n = np.zeros([nmax, ka.size])
     
-    for n in range(nmin, nmax+1):
+    for n in range(nmin, nmax):
         an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
         sigma_ext_n[n, :] = - 4*np.pi / k**2 * (2*n+1) * np.real(an)
         
@@ -74,9 +74,9 @@ def acoustics_absorption_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50,
         sigma_norm = np.pi * a**2
 
     sigma_abs = np.zeros(ka.size, dtype=np.float64)
-    sigma_abs_n = np.zeros([nmax+1 - nmin, ka.size])
+    sigma_abs_n = np.zeros([nmax, ka.size])
     
-    for n in range(nmin, nmax+1):
+    for n in range(nmin, nmax):
         an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
         sigma_abs_n[n, :] = - 4*np.pi / k**2 * (2*n+1) * (np.abs(an)**2 + np.real(an)) 
         
