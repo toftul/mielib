@@ -49,7 +49,7 @@ def rotation_matrix_3d_cyl(phi, axis='z'):
 def cart2sph(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
     theta = np.arccos(z/r)
-    phi = np.arctan2(y/x)
+    phi = np.arctan2(y, x)
 
     return r, theta, phi
 
