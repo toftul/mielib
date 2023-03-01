@@ -26,6 +26,31 @@ def acoustics_mie_a(n, ka, rho1, beta1):
         up/down
     )
     return ans
+
+def acoustics_mie_c(n, ka, rho1, beta1):
+    """
+        n - multipole order
+        ka - size parameter in host media
+        rho1 - relative density
+        beta1 - relative compressibility
+    """
+    gamma = np.sqrt(beta1/rho1)
+    k1a = ka * np.sqrt(beta1*rho1)
+    jn1 = sp.spherical_jn(n, k1a)
+    jn = sp.spherical_jn(n, ka)
+    jn1p = sp.spherical_jn(n, k1a, 1)
+    jnp = sp.spherical_jn(n, ka, 1)
+    hn = extraspecial.spherical_h1(n, ka)
+    hnp = extraspecial.spherical_h1(n, ka, p=1)
+    up = 1j / (ka**2)
+    down = (jn1 * hnp - gamma * jn1p * hn)
+    
+    ans = np.where(
+        down == 0,
+        0,
+        up/down
+    )
+    return ans
     
     
 def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, norm='none'):
