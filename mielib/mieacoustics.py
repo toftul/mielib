@@ -2,7 +2,7 @@ import numpy as np
 import scipy.special as sp
 from mielib import extraspecial
 
-def acoustics_mie_a(n, ka, rho1, beta1):
+def acoustics_mie_a(n, ka, rho1, beta1, get_denominator=False):
     """
         n - multipole order
         ka - size parameter in host media
@@ -20,14 +20,12 @@ def acoustics_mie_a(n, ka, rho1, beta1):
     up = (gamma * jn1p * jn - jn1 * jnp)
     down = (jn1 * hnp - gamma * jn1p * hn)
     
-    ans = np.where(
-        down == 0,
-        0,
-        up/down
-    )
-    return ans
+    if get_denominator:
+        return down
+    else:
+        return up/down
 
-def acoustics_mie_c(n, ka, rho1, beta1):
+def acoustics_mie_c(n, ka, rho1, beta1, get_denominator=False):
     """
         n - multipole order
         ka - size parameter in host media
@@ -37,20 +35,16 @@ def acoustics_mie_c(n, ka, rho1, beta1):
     gamma = np.sqrt(beta1/rho1)
     k1a = ka * np.sqrt(beta1*rho1)
     jn1 = sp.spherical_jn(n, k1a)
-    jn = sp.spherical_jn(n, ka)
     jn1p = sp.spherical_jn(n, k1a, 1)
-    jnp = sp.spherical_jn(n, ka, 1)
     hn = extraspecial.spherical_h1(n, ka)
     hnp = extraspecial.spherical_h1(n, ka, p=1)
     up = 1j / (ka**2)
     down = (jn1 * hnp - gamma * jn1p * hn)
     
-    ans = np.where(
-        down == 0,
-        0,
-        up/down
-    )
-    return ans
+    if get_denominator:
+        return down
+    else:
+        return up/down
     
     
 def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, norm='none'):

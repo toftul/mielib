@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mielib"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 authors = ["Ivan Toftul <toftul.ivan@gmail.com>"]
 readme = "README.md"
