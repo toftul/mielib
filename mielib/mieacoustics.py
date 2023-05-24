@@ -77,8 +77,8 @@ def acoustics_pressure_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, n
     sigma_pr_n = np.zeros([nmax, ka.size])
     
     for n in range(nmin, nmax):
-        an = mielib.acoustics_mie_a(n, ka, rho_rel, beta_rel)
-        an_plus1 = mielib.acoustics_mie_a(n+1, ka, rho_rel, beta_rel)
+        an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
+        an_plus1 = acoustics_mie_a(n+1, ka, rho_rel, beta_rel)
         if n == nmax-1:
             # to ensure that pressure cross section is always positive
             sigma_pr_n[n, :] = -4*np.pi / k**2 * (2*n+1) * np.real(an)  
