@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "mielib"
-version = "0.1.10"
-description = ""
+version = "0.1.11"
+description = "Python library with many Mie-related functions for optics and acoustics"
 authors = ["Ivan Toftul <toftul.ivan@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/toftul/mielib"
+homepage = "https://github.com/toftul/mielib"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
