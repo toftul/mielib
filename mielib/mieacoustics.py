@@ -59,11 +59,35 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50,
     
     for n in range(nmin, nmax):
         an = acoustics_mie_a(n, ka, rho_rel, beta_rel)
-        sigma_sc_n[n, :] = 4*np.pi / k**2 * (2*n+1) * np.abs(an**2)
+        sigma_sc_n[n, :] = 4*np.pi / k**2 * (2*n+1) * np.abs(an)**2
         
     sigma_sc = np.sum(sigma_sc_n, axis=0)
     
     return sigma_sc/sigma_norm, sigma_sc_n/sigma_norm
+    
+
+def acoustics_pressure_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, norm='none'):
+    ka = a * k
+    
+    sigma_norm = 1.0
+    if norm == 'geom':
+        sigma_norm = np.pi * a**2
+
+    sigma_pr = np.zeros(ka.size, dtype=np.float64)
+    sigma_pr_n = np.zeros([nmax, ka.size])
+    
+    for n in range(nmin, nmax):
+        an = mielib.acoustics_mie_a(n, ka, rho_rel, beta_rel)
+        an_plus1 = mielib.acoustics_mie_a(n+1, ka, rho_rel, beta_rel)
+        if n == nmax-1:
+            # to ensure that pressure cross section is always positive
+            sigma_pr_n[n, :] = -4*np.pi / k**2 * (2*n+1) * np.real(an)  
+        else:
+            sigma_pr_n[n, :] = -4*np.pi / k**2 * ((2*n+1) * np.real(an) + 2*(n+1) * np.real(np.conj(an) * an_plus1)) 
+        
+    sigma_pr = np.sum(sigma_pr_n, axis=0)
+    
+    return sigma_pr/sigma_norm, sigma_pr_n/sigma_norm
 
 
 def acoustics_extinction_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=50, norm='none'):
