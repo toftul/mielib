@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/567526673.svg)](https://zenodo.org/badge/latestdoi/567526673)
+
 # MieLib
 
 Python library with many Mie-related functions for optics and acoustics. In particular:
@@ -25,6 +27,16 @@ See examples folder with Jupyter Notebooks.
 * Search for complex poles of Mie scattering coefficients
 
 ## Credits
-Ivan Toftul 
 
-`toftul.ivan@gmail.com`
+```bibtex
+@misc{mielib,
+	author = {Ivan Toftul},
+	title = {{MieLib python library}},
+	journal = {GitHub},
+	year = {2023},
+	url = {https://github.com/toftul/mielib},
+    doi = {10.5281/zenodo.8008648}
+}
+```
+
+
