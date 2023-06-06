@@ -35,7 +35,7 @@ See examples folder with Jupyter Notebooks.
 	journal = {GitHub},
 	year = {2023},
 	url = {https://github.com/toftul/mielib},
-    doi = {10.5281/zenodo.8008648}
+	doi = {10.5281/zenodo.8008648}
 }
 ```
 
