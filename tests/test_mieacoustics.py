@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import scipy.special as sp
 
 import mielib
 
@@ -61,3 +62,36 @@ def test_scalar_k_gives_the_same_result_as_an_array(cross_section):
 def test_unknown_norm_raises(cross_section):
     with pytest.raises(ValueError, match="norm"):
         cross_section(np.array([1.0]), 1.0, 2.0, 0.5, norm='geometric')
+
+
+@pytest.mark.parametrize("ka, rho_rel, beta_rel", [
+    (1.3, 2.0, 0.5),
+    (0.4, 0.3, 3.0),
+    (2.5, 3 + 0.1j, 2.0),
+    (0.05, 1.2e-3, 1.5e4),
+    (1.0 - 0.1j, 4.0, 0.7),
+])
+def test_coefficients_satisfy_boundary_conditions(ka, rho_rel, beta_rel):
+    """Eq. (3) in the Supplemental Material of arXiv:1905.12216: the pressure and the normal velocity are continuous at r = a."""
+    n = np.arange(0, 7)
+    k1a = ka * np.sqrt(rho_rel * beta_rel)
+    delta = np.sqrt(beta_rel / rho_rel)
+
+    a = mielib.acoustics_mie_a(n, ka, rho_rel, beta_rel)
+    c = mielib.acoustics_mie_c(n, ka, rho_rel, beta_rel)
+
+    # p_in + p_sc = p_part
+    np.testing.assert_allclose(
+        sp.spherical_jn(n, ka) + a * mielib.spherical_h1(n, ka),
+        c * sp.spherical_jn(n, k1a), rtol=1e-12)
+    # (1/rho) dp/dr outside = (1/rho_1) dp/dr inside, and k_1 / (k rho_rel) = delta
+    np.testing.assert_allclose(
+        sp.spherical_jn(n, ka, 1) + a * mielib.spherical_h1(n, ka, p=1),
+        delta * c * sp.spherical_jn(n, k1a, 1), rtol=1e-12)
+
+
+def test_internal_coefficient_shares_the_denominator():
+    n = np.arange(0, 5)
+    params = dict(ka=1.7, rho1=2.0 + 0.1j, beta1=0.5, get_denominator=True)
+
+    np.testing.assert_allclose(mielib.acoustics_mie_c(n, **params), mielib.acoustics_mie_a(n, **params))

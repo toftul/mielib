@@ -24,6 +24,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   The cross sections are not defined in a lossy host.
   Before, the functions removed the imaginary part and gave incorrect values with many warnings.
   `optics_mie_a` and `optics_mie_b` still accept a lossy host.
+- The docstrings of `acoustics_mie_a` and `acoustics_mie_c` now give the source of the formulas
+  ([arXiv:1905.12216](https://arxiv.org/abs/1905.12216)), the field expansion and the time convention.
 - An unknown option now raises `ValueError`.
   Before, the functions returned zeros, `nan` or the identity matrix without a warning.
   This applies to `norm` in the cross sections, `source` and `parity` in the harmonics,

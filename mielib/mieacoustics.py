@@ -4,6 +4,11 @@ from mielib import extraspecial
 
 def acoustics_mie_a(n, ka, rho1, beta1, get_denominator=False):
     """
+        Acoustic Mie scattering coefficient, Eq. (4) in the Supplemental Material of
+        I. D. Toftul et al., Phys. Rev. Lett. 123, 183901 (2019), arXiv:1905.12216
+        Time dependence exp(-i omega t), incident pressure p = sum_n A_n j_n(k r) P_n(cos theta), A_n = A i^n (2n+1).
+        The scattered pressure is p = sum_n A_n a_n h_n(k r) P_n(cos theta).
+
         n - multipole order
         ka - size parameter in host media
         rho1 - relative density
@@ -27,6 +32,11 @@ def acoustics_mie_a(n, ka, rho1, beta1, get_denominator=False):
 
 def acoustics_mie_c(n, ka, rho1, beta1, get_denominator=False):
     """
+        Internal acoustic Mie coefficient, Eq. (4) in the Supplemental Material of
+        I. D. Toftul et al., Phys. Rev. Lett. 123, 183901 (2019), arXiv:1905.12216
+        Time dependence exp(-i omega t), incident pressure p = sum_n A_n j_n(k r) P_n(cos theta), A_n = A i^n (2n+1).
+        The pressure inside the particle is p = sum_n A_n c_n j_n(k1 r) P_n(cos theta), k1 = k sqrt(rho1 beta1).
+
         n - multipole order
         ka - size parameter in host media
         rho1 - relative density
@@ -38,6 +48,7 @@ def acoustics_mie_c(n, ka, rho1, beta1, get_denominator=False):
     jn1p = sp.spherical_jn(n, k1a, 1)
     hn = extraspecial.spherical_h1(n, ka)
     hnp = extraspecial.spherical_h1(n, ka, p=1)
+    # the Wronskian j_n h_n' - j_n' h_n = i/(ka)^2
     up = 1j / (ka**2)
     down = (jn1 * hnp - gamma * jn1p * hn)
     
