@@ -20,6 +20,7 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The vector spherical harmonics `vsh_toftul_m`, `vsh_toftul_n`, `vsh_toftul_l` and `vsh_jackson_x`
   work again with SciPy 1.17 and later.
   SciPy 1.17 removed `scipy.special.sph_harm`. mielib now uses `scipy.special.sph_harm_y`.
+- `sph2cart` no longer raises `NameError`. The function now calculates `y`.
 
 ## [0.1.12] - 2023-05-24
 

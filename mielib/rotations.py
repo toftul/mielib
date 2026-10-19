@@ -56,7 +56,7 @@ def cart2sph(x, y, z):
 
 def sph2cart(r, theta, phi):
     x = r * np.sin(theta) * np.cos(phi)
-    x = r * np.sin(theta) * np.sin(phi)
+    y = r * np.sin(theta) * np.sin(phi)
     z = r * np.cos(theta)
 
     return x, y, z
