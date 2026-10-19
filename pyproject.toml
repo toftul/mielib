@@ -10,7 +10,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-scipy = "^1.9.3"
+scipy = ">=1.15"
 
 
 [build-system]

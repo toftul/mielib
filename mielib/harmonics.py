@@ -216,12 +216,12 @@ def vsh_jackson_x(m, n, theta, phi):
     '''
         from Jackson's book paragraph 9.7
     '''
-    Ymn = sp.sph_harm(m, n, phi, theta)
+    Ymn = sp.sph_harm_y(n, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn
     if m+1 <= n:
         # sqrt((-m + n) (1 + m + n)) = np.sqrt(sp.gamma(1-m+n)) * np.sqrt(sp.gamma(2+m+n)) / (np.sqrt(sp.gamma(-m+n)) * np.sqrt(sp.gamma(1+m+n)))
         dYmn += np.exp(-1j*phi) * np.sqrt((-m + n)*(1 + m + n)
-                                          ) * sp.sph_harm(m+1, n, phi, theta)
+                                          ) * sp.sph_harm_y(n, m+1, theta, phi)
 
     return (-1)/np.sqrt(n*(n+1)) * np.array([
         np.zeros(np.shape(theta * phi)),
@@ -253,12 +253,12 @@ def vsh_toftul_m(m, j, rho, theta, phi, superscript=3):
 
     zj = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
 
-    Mt = 1j * m / np.sin(theta) * zj * sp.sph_harm(m, j, phi, theta)
+    Mt = 1j * m / np.sin(theta) * zj * sp.sph_harm_y(j, m, theta, phi)
 
-    dYmn = m/np.tan(theta) * sp.sph_harm(m, j, phi, theta)
+    dYmn = m/np.tan(theta) * sp.sph_harm_y(j, m, theta, phi)
     if m+1 <= j:
         # sqrt((-m + j) (1 + m + j)) = np.sqrt(sp.gamma(1-m+j)) * np.sqrt(sp.gamma(2+m+j)) / (np.sqrt(sp.gamma(-m+j)) * np.sqrt(sp.gamma(1+m+j)))
-        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
+        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm_y(j, m+1, theta, phi)
 
     Mp = -zj * dYmn
 
@@ -291,11 +291,11 @@ def vsh_toftul_n(m, j, rho, theta, phi, superscript=3):
     zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
     zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
 
-    Ymn = sp.sph_harm(m, j, phi, theta)
+    Ymn = sp.sph_harm_y(j, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn
     if m+1 <= j:
         # sqrt((-m + j) (1 + m + j)) = np.sqrt(sp.gamma(1-m+j)) * np.sqrt(sp.gamma(2+m+j)) / (np.sqrt(sp.gamma(-m+j)) * np.sqrt(sp.gamma(1+m+j)))
-        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
+        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm_y(j, m+1, theta, phi)
 
     Nr = j*(j+1) * zj/rho * Ymn
     Nt = 1/rho * (zj + rho * zjp) * dYmn
@@ -328,11 +328,11 @@ def vsh_toftul_l(m, j, rho, theta, phi, superscript=3):
     zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
     zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
 
-    Ymn = sp.sph_harm(m, j, phi, theta)
+    Ymn = sp.sph_harm_y(j, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn
     if m+1 <= j:
         # sqrt((-m + n) (1 + m + n)) = np.sqrt(sp.gamma(1-m+n)) * np.sqrt(sp.gamma(2+m+n)) / (np.sqrt(sp.gamma(-m+n)) * np.sqrt(sp.gamma(1+m+n)))
-        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm(m+1, j, phi, theta)
+        dYmn += np.exp(-1j*phi) * np.sqrt((-m + j)*(1 + m + j)) * sp.sph_harm_y(j, m+1, theta, phi)
 
     Lr = zjp * Ymn
     Lt = zj/rho * dYmn

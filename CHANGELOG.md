@@ -11,6 +11,16 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - A test suite in `tests/`. To run it, use `poetry run pytest`.
   The tests stop with an error when the code calls a deprecated function.
 
+### Changed
+
+- mielib now needs SciPy 1.15 or later.
+
+### Fixed
+
+- The vector spherical harmonics `vsh_toftul_m`, `vsh_toftul_n`, `vsh_toftul_l` and `vsh_jackson_x`
+  work again with SciPy 1.17 and later.
+  SciPy 1.17 removed `scipy.special.sph_harm`. mielib now uses `scipy.special.sph_harm_y`.
+
 ## [0.1.12] - 2023-05-24
 
 This is the last release before this changelog.
