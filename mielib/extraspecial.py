@@ -10,11 +10,12 @@ def spherical_jnpp(n, z):
     # slower option is to
     #     spherical_jn(n-1, z, 1) + (n+1)/z**2 * spherical_jn(n, z) - (n+1)/z * spherical_jn(n, z, 1)
     # but this is faster
-    return n/(2*n+1) * sp.spherical_jn(n-1, z, 1) - (n+1)/(2*n+1) * sp.spherical_jn(n+1, z, 1)
+    # for n = 0 the first term has zero weight, and np.maximum avoids the nan from order -1
+    return n/(2*n+1) * sp.spherical_jn(np.maximum(n-1, 0), z, 1) - (n+1)/(2*n+1) * sp.spherical_jn(n+1, z, 1)
 
 
 def spherical_ynpp(n, z):
-    return n/(2*n+1) * sp.spherical_yn(n-1, z, 1) - (n+1)/(2*n+1) * sp.spherical_yn(n+1, z, 1)
+    return n/(2*n+1) * sp.spherical_yn(np.maximum(n-1, 0), z, 1) - (n+1)/(2*n+1) * sp.spherical_yn(n+1, z, 1)
 
 
 def spherical_h1pp(n, z):
