@@ -9,8 +9,8 @@ homepage = "https://github.com/toftul/mielib"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-scipy = ">=1.15"
+python = ">=3.12"
+scipy = ">=1.18"
 
 
 [build-system]

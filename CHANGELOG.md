@@ -10,14 +10,14 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 - A test suite in `tests/`. To run it, use `poetry run pytest`.
   The tests stop with an error when the code calls a deprecated function.
-- A GitHub Actions workflow runs the tests with Python 3.10 to 3.14 for each push to `main` and each pull request.
+- A GitHub Actions workflow runs the tests with Python 3.12 to 3.14 for each push to `main` and each pull request.
 - `wiscombe_nstop(x)` gives the highest multipole order that a converged Mie series needs.
 - `optics_mie_c` and `optics_mie_d` give the internal optical Mie coefficients c_n and d_n of Bohren & Huffman.
   They have the same arguments as `optics_mie_a` and `optics_mie_b`, including `get_denominator`.
 
 ### Changed
 
-- mielib now needs SciPy 1.15 or later.
+- mielib now needs Python 3.12 or later and SciPy 1.18 or later.
 - The default of `nmax` in all cross-section functions is now `None`.
   With `None`, each function finds `nmax` from the largest size parameter.
   The shape of the per-multipole arrays now depends on the size parameter.
