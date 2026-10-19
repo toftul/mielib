@@ -63,6 +63,68 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
         return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
 
 
+def optics_mie_c(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
+    """
+        Internal magnetic Mie coefficient. For details see Bohren p. 100
+        The field inside the particle is E = sum_n E_n (c_n M_o1n - i d_n N_e1n),
+        where M and N have the radial function j_n(m k r).
+
+        Arguments:
+            n - 2^n multipole order
+            k0a - vacuum size parameter
+            eps_p, mu_p - particle parameters
+            eps_h, mu_h - host parameters
+    """
+    n_p, n_h = np.sqrt(eps_p * mu_p, dtype=complex), np.sqrt(eps_h * mu_h, dtype=complex)
+    x = n_h * k0a
+    m = n_p / n_h
+    mu = mu_p / mu_h
+
+    mx = m * x
+    jnmx = sp.spherical_jn(n, mx)
+    h1nx = extraspecial.spherical_h1(n, x)
+    mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
+    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+
+    if get_denominator:
+        # same as for b_n
+        return mu * jnmx * xh1nx_p - h1nx * mxjnmx_p
+    else:
+        # the numerator is mu x (j_n h_n' - j_n' h_n) = mu i/x (Wronskian)
+        return mu * 1j / x / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
+
+
+def optics_mie_d(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
+    """
+        Internal electric Mie coefficient. For details see Bohren p. 100
+        The field inside the particle is E = sum_n E_n (c_n M_o1n - i d_n N_e1n),
+        where M and N have the radial function j_n(m k r).
+
+        Arguments:
+            n - 2^n multipole order
+            k0a - vacuum size parameter
+            eps_p, mu_p - particle parameters
+            eps_h, mu_h - host parameters
+    """
+    n_p, n_h = np.sqrt(eps_p * mu_p, dtype=complex), np.sqrt(eps_h * mu_h, dtype=complex)
+    x = n_h * k0a
+    m = n_p / n_h
+    mu = mu_p / mu_h
+
+    mx = m * x
+    jnmx = sp.spherical_jn(n, mx)
+    h1nx = extraspecial.spherical_h1(n, x)
+    mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
+    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+
+    if get_denominator:
+        # same as for a_n
+        return m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p
+    else:
+        # the numerator is mu m x (j_n h_n' - j_n' h_n) = mu m i/x (Wronskian)
+        return mu * m * 1j / x / (m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p)
+
+
 def _host_refractive_index(eps_h, mu_h):
     """
         Refractive index of the host for the cross sections.
