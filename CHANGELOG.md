@@ -10,6 +10,7 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 - A test suite in `tests/`. To run it, use `poetry run pytest`.
   The tests stop with an error when the code calls a deprecated function.
+- A GitHub Actions workflow runs the tests with Python 3.10 to 3.14 for each push to `main` and each pull request.
 - `wiscombe_nstop(x)` gives the highest multipole order that a converged Mie series needs.
 - `optics_mie_c` and `optics_mie_d` give the internal optical Mie coefficients c_n and d_n of Bohren & Huffman.
   They have the same arguments as `optics_mie_a` and `optics_mie_b`, including `get_denominator`.
