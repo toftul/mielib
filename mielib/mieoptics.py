@@ -63,10 +63,13 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
         return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
 
 
-def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
     n_host = np.sqrt(eps_h * mu_h)
+    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    if nmax is None:
+        nmax = int(np.max(nstop)) + 1
 
     sigma_norm = 1.0
     if norm == 'geom':
@@ -77,8 +80,10 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_sc_n_magnetic = np.zeros([nmax, k0a.size], dtype=np.float64)
 
     for n in range(nmin, nmax):
-        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
-        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        # the terms above nstop are negligible, and they are nan when h1 overflows
+        with np.errstate(invalid='ignore'):
+            an = np.where(n <= nstop, optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
+            bn = np.where(n <= nstop, optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
         sigma_sc_n_electric[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * np.abs(an**2)
         sigma_sc_n_magnetic[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * np.abs(bn**2)
         
@@ -88,10 +93,13 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
 
 
 
-def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
     n_host = np.sqrt(eps_h * mu_h)
+    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    if nmax is None:
+        nmax = int(np.max(nstop)) + 1
 
     sigma_norm = 1.0
     if norm == 'geom':
@@ -102,8 +110,10 @@ def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_ext_n_magnetic = np.zeros([nmax, k0a.size], dtype=np.float64)
 
     for n in range(nmin, nmax):
-        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
-        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        # the terms above nstop are negligible, and they are nan when h1 overflows
+        with np.errstate(invalid='ignore'):
+            an = np.where(n <= nstop, optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
+            bn = np.where(n <= nstop, optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
         sigma_ext_n_electric[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * np.real(an)
         sigma_ext_n_magnetic[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * np.real(bn)
         
@@ -112,10 +122,13 @@ def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     return sigma_ext/sigma_norm, sigma_ext_n_electric/sigma_norm, sigma_ext_n_magnetic/sigma_norm
 
 
-def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=50, norm='none'):
+def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
     n_host = np.sqrt(eps_h * mu_h)
+    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    if nmax is None:
+        nmax = int(np.max(nstop)) + 1
 
     sigma_norm = 1.0
     if norm == 'geom':
@@ -126,8 +139,10 @@ def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_abs_n_magnetic = np.zeros([nmax, k0a.size], dtype=np.float64)
 
     for n in range(nmin, nmax):
-        an = optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
-        bn = optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+        # the terms above nstop are negligible, and they are nan when h1 overflows
+        with np.errstate(invalid='ignore'):
+            an = np.where(n <= nstop, optics_mie_a(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
+            bn = np.where(n <= nstop, optics_mie_b(n, k0a, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h), 0)
         sigma_abs_n_electric[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * (np.real(an) - np.abs(an)**2)
         sigma_abs_n_magnetic[n, :] = 2*np.pi / (n_host * k0)**2 * (2*n+1) * (np.real(bn) - np.abs(bn)**2)
         

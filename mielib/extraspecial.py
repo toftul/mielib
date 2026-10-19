@@ -1,3 +1,4 @@
+import numpy as np
 import scipy.special as sp
 
 
@@ -22,3 +23,14 @@ def spherical_h1pp(n, z):
 
 def spherical_h2(n, z, p):
     return sp.spherical_jn(n, z, p) - 1j * sp.spherical_yn(n, z, p)
+
+def wiscombe_nstop(x):
+    """
+        Highest multipole order for a converged Mie series.
+        Wiscombe, Appl. Opt. 19, 1505 (1980).
+
+        Arguments:
+            x - size parameter in the host medium
+    """
+    x = np.abs(x)
+    return np.floor(x + 4.05 * np.cbrt(x) + 2).astype(int)

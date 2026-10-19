@@ -10,10 +10,14 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 - A test suite in `tests/`. To run it, use `poetry run pytest`.
   The tests stop with an error when the code calls a deprecated function.
+- `wiscombe_nstop(x)` gives the highest multipole order that a converged Mie series needs.
 
 ### Changed
 
 - mielib now needs SciPy 1.15 or later.
+- The default of `nmax` in all cross-section functions is now `None`.
+  With `None`, each function finds `nmax` from the largest size parameter.
+  The shape of the per-multipole arrays now depends on the size parameter.
 
 ### Fixed
 
@@ -21,6 +25,12 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   work again with SciPy 1.17 and later.
   SciPy 1.17 removed `scipy.special.sph_harm`. mielib now uses `scipy.special.sph_harm_y`.
 - `sph2cart` no longer raises `NameError`. The function now calculates `y`.
+- The cross sections are now correct for large spheres.
+  The old default `nmax=50` stopped the series too early when the size parameter was more than approximately 40.
+  For example, the error in `Q_sca` was 35 % for `m = 1.5` and `x = 60`.
+- The cross sections no longer return `nan` for small spheres when `nmax` is large.
+  Each point now uses only the multipoles up to `wiscombe_nstop(x)`.
+  Thus, one call can now calculate a sweep from small to large spheres.
 
 ## [0.1.12] - 2023-05-24
 
