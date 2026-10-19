@@ -63,10 +63,24 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
         return (mu * jnmx * xjnx_p - jnx * mxjnmx_p) / (mu * jnmx * xh1nx_p - h1nx * mxjnmx_p)
 
 
+def _host_refractive_index(eps_h, mu_h):
+    """
+        Refractive index of the host for the cross sections.
+        The cross sections are not defined in a lossy host, because the scattered field decays.
+
+        Arguments:
+            eps_h, mu_h - host parameters
+    """
+    eps_mu_h = np.asarray(eps_h * mu_h)
+    if np.any(np.imag(eps_mu_h) != 0) or np.any(np.real(eps_mu_h) <= 0):
+        raise ValueError("The cross sections need a lossless host. Use a real and positive eps_h * mu_h.")
+    return np.sqrt(np.real(eps_mu_h))
+
+
 def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
-    n_host = np.sqrt(eps_h * mu_h)
+    n_host = _host_refractive_index(eps_h, mu_h)
     nstop = extraspecial.wiscombe_nstop(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
@@ -96,7 +110,7 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
 def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
-    n_host = np.sqrt(eps_h * mu_h)
+    n_host = _host_refractive_index(eps_h, mu_h)
     nstop = extraspecial.wiscombe_nstop(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
@@ -125,7 +139,7 @@ def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
 def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=1, nmax=None, norm='none'):
     k0a = np.asarray(k0 * a)
 
-    n_host = np.sqrt(eps_h * mu_h)
+    n_host = _host_refractive_index(eps_h, mu_h)
     nstop = extraspecial.wiscombe_nstop(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1

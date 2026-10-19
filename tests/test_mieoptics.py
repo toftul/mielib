@@ -48,3 +48,28 @@ def test_one_call_covers_small_and_large_spheres(nmax):
 
     assert np.all(np.isfinite(one_call))
     np.testing.assert_allclose(one_call, separate, rtol=1e-12)
+
+
+CROSS_SECTIONS = [
+    mielib.optics_scattering_cross_section,
+    mielib.optics_extinction_cross_section,
+    mielib.optics_absorption_cross_section,
+]
+
+
+@pytest.mark.parametrize("cross_section", CROSS_SECTIONS)
+def test_lossy_host_raises(cross_section):
+    with pytest.raises(ValueError, match="lossless host"):
+        cross_section(np.array([1.0]), 1.0, eps_p=4.0, eps_h=1.5 + 0.01j)
+
+
+@pytest.mark.parametrize("cross_section", CROSS_SECTIONS)
+def test_host_scales_wavenumber_and_contrast(cross_section):
+    """A sphere in a host with index n_h is the same as a sphere in vacuum with k0 -> n_h k0 and eps_p -> eps_p / eps_h."""
+    k0 = np.array([0.5, 2.0, 7.0])
+    eps_p, eps_h = 6.0 + 0.4j, 1.77
+
+    in_host = cross_section(k0, 1.0, eps_p=eps_p, eps_h=eps_h)[0]
+    in_vacuum = cross_section(np.sqrt(eps_h) * k0, 1.0, eps_p=eps_p / eps_h)[0]
+
+    np.testing.assert_allclose(in_host, in_vacuum, rtol=1e-12)

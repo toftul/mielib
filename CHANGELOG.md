@@ -18,6 +18,10 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The default of `nmax` in all cross-section functions is now `None`.
   With `None`, each function finds `nmax` from the largest size parameter.
   The shape of the per-multipole arrays now depends on the size parameter.
+- The optical cross-section functions now raise `ValueError` for a lossy host.
+  The cross sections are not defined in a lossy host.
+  Before, the functions removed the imaginary part and gave incorrect values with many warnings.
+  `optics_mie_a` and `optics_mie_b` still accept a lossy host.
 
 ### Fixed
 
