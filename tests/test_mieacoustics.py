@@ -55,3 +55,9 @@ def test_scalar_k_gives_the_same_result_as_an_array(cross_section):
 
     for s, a in zip(scalar, array):
         np.testing.assert_allclose(s, a, rtol=1e-14)
+
+
+@pytest.mark.parametrize("cross_section", CROSS_SECTIONS)
+def test_unknown_norm_raises(cross_section):
+    with pytest.raises(ValueError, match="norm"):
+        cross_section(np.array([1.0]), 1.0, 2.0, 0.5, norm='geometric')

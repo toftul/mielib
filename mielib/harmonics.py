@@ -10,7 +10,6 @@ def spherical_radial_function_z(j, rho, p=0, superscript=1):
         p = 0,1 - derivative order
         superscript - type of radial function
     """
-    zj = np.array([0.0j])
     match superscript:
         case 1:
             zj = sp.spherical_jn(j, rho, p)
@@ -20,6 +19,8 @@ def spherical_radial_function_z(j, rho, p=0, superscript=1):
             zj = extraspecial.spherical_h1(j, rho, p)
         case 4:
             zj = extraspecial.spherical_h2(j, rho, p)
+        case _:
+            raise ValueError(f"superscript must be 1, 2, 3 or 4, not {superscript!r}")
 
     return zj
 
@@ -370,9 +371,9 @@ def vector_spherical_harmonic_m(m, j, rho, theta, phi, superscript=3, source='to
                 case 'odd':
                     return vsh_bohren_mo(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
                 case _:
-                    return np.array([0.0, 0.0, 0.0])
+                    raise ValueError(f"parity must be 'even' or 'odd', not {parity!r}")
         case _:
-            return np.array([0.0, 0.0, 0.0])
+            raise ValueError(f"source must be 'toftul' or 'bohren', not {source!r}")
      
 
 
@@ -404,9 +405,9 @@ def vector_spherical_harmonic_n(m, j, rho, theta, phi, superscript=3, source='to
                 case 'odd':
                     return vsh_bohren_no(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
                 case _:
-                    return np.array([0.0, 0.0, 0.0])
+                    raise ValueError(f"parity must be 'even' or 'odd', not {parity!r}")
         case _:
-            return np.array([0.0, 0.0, 0.0])
+            raise ValueError(f"source must be 'toftul' or 'bohren', not {source!r}")
 
 
 def vector_spherical_harmonic_l(m, j, rho, theta, phi, superscript=3, source='toftul', parity='even'):
@@ -431,4 +432,4 @@ def vector_spherical_harmonic_l(m, j, rho, theta, phi, superscript=3, source='to
         case 'toftul':
             return vsh_toftul_l(m, j, rho, theta, phi, superscript=superscript)
         case _:
-            return np.array([0.0, 0.0, 0.0])
+            raise ValueError(f"source must be 'toftul' for the L harmonic, not {source!r}")

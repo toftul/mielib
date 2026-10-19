@@ -88,6 +88,8 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_sc   = np.zeros(k0a.size, dtype=np.float64)
     sigma_sc_n_electric = np.zeros([nmax, k0a.size], dtype=np.float64)
@@ -118,6 +120,8 @@ def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_ext   = np.zeros(k0a.size, dtype=np.float64)
     sigma_ext_n_electric = np.zeros([nmax, k0a.size], dtype=np.float64)
@@ -147,6 +151,8 @@ def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_abs   = np.zeros(k0a.size, dtype=np.float64)
     sigma_abs_n_electric = np.zeros([nmax, k0a.size], dtype=np.float64)

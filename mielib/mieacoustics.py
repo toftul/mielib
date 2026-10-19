@@ -56,6 +56,8 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=Non
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_sc = np.zeros(ka.size, dtype=np.float64)
     sigma_sc_n = np.zeros([nmax, ka.size])
@@ -80,6 +82,8 @@ def acoustics_pressure_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None,
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_pr = np.zeros(ka.size, dtype=np.float64)
     sigma_pr_n = np.zeros([nmax, ka.size])
@@ -109,6 +113,8 @@ def acoustics_extinction_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=Non
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_ext = np.zeros(ka.size, dtype=np.float64)
     sigma_ext_n = np.zeros([nmax, ka.size])
@@ -133,6 +139,8 @@ def acoustics_absorption_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=Non
     sigma_norm = 1.0
     if norm == 'geom':
         sigma_norm = np.pi * a**2
+    elif norm != 'none':
+        raise ValueError(f"norm must be 'none' or 'geom', not {norm!r}")
 
     sigma_abs = np.zeros(ka.size, dtype=np.float64)
     sigma_abs_n = np.zeros([nmax, ka.size])

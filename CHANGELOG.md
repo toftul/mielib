@@ -22,6 +22,12 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   The cross sections are not defined in a lossy host.
   Before, the functions removed the imaginary part and gave incorrect values with many warnings.
   `optics_mie_a` and `optics_mie_b` still accept a lossy host.
+- An unknown option now raises `ValueError`.
+  Before, the functions returned zeros, `nan` or the identity matrix without a warning.
+  This applies to `norm` in the cross sections, `source` and `parity` in the harmonics,
+  `superscript` in `spherical_radial_function_z`, and `axis` in `rotation_matrix_3d_cyl`.
+- `rotation_matrix_3d_cyl` now raises `NotImplementedError` for `axis='x'` and `axis='y'`.
+  Before, it returned `nan`.
 
 ### Fixed
 

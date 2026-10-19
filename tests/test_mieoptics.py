@@ -73,3 +73,9 @@ def test_host_scales_wavenumber_and_contrast(cross_section):
     in_vacuum = cross_section(np.sqrt(eps_h) * k0, 1.0, eps_p=eps_p / eps_h)[0]
 
     np.testing.assert_allclose(in_host, in_vacuum, rtol=1e-12)
+
+
+@pytest.mark.parametrize("cross_section", CROSS_SECTIONS)
+def test_unknown_norm_raises(cross_section):
+    with pytest.raises(ValueError, match="norm"):
+        cross_section(np.array([1.0]), 1.0, eps_p=4.0, norm='geometric')

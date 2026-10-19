@@ -32,10 +32,8 @@ def rotation_matrix_3d_cyl(phi, axis='z'):
         https://en.wikipedia.org/wiki/Vector_fields_in_cylindrical_and_spherical_coordinates
     """
     match axis:
-        case 'x':
-            return np.nan
-        case 'y':
-            return np.nan
+        case 'x' | 'y':
+            raise NotImplementedError("Only axis='z' is available.")
         case 'z':
             return np.array([
                 [np.cos(phi), -np.sin(phi), 0],
@@ -43,7 +41,7 @@ def rotation_matrix_3d_cyl(phi, axis='z'):
                 [          0,            0, 1],
             ])
         case _:
-            return np.eye(3)
+            raise ValueError(f"axis must be 'x', 'y' or 'z', not {axis!r}")
 
 
 def cart2sph(x, y, z):
