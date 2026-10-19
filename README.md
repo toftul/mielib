@@ -22,8 +22,6 @@ See examples folder with Jupyter Notebooks.
 
 ## ToDo
 
-* Make tests
-* Setup github actions
 * Search for complex poles of Mie scattering coefficients
 
 ## Credits

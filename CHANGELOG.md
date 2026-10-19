@@ -6,6 +6,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-19
+
 ### Added
 
 - A test suite in `tests/`. To run it, use `poetry run pytest`.
@@ -64,5 +66,6 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 This is the last release before this changelog.
 For older changes, see the git history.
 
-[Unreleased]: https://github.com/toftul/mielib/compare/0.1.12...HEAD
+[Unreleased]: https://github.com/toftul/mielib/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/toftul/mielib/compare/0.1.12...0.2.0
 [0.1.12]: https://github.com/toftul/mielib/releases/tag/0.1.12
