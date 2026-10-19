@@ -36,6 +36,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The vector spherical harmonics no longer change the `rho` and `theta` arrays of the caller.
   Before, they replaced each zero in these arrays with `1e-15`.
 - `spherical_jnpp`, `spherical_ynpp` and `spherical_h1pp` no longer return `nan` for `n = 0`.
+- The acoustic cross-section functions now accept a scalar `k`.
+  Before, they raised `AttributeError`.
 
 ## [0.1.12] - 2023-05-24
 

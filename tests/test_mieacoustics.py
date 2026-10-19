@@ -46,3 +46,12 @@ def test_one_call_covers_small_and_large_spheres(cross_section, nmax):
 
     assert np.all(np.isfinite(one_call))
     np.testing.assert_allclose(one_call, separate, rtol=1e-12)
+
+
+@pytest.mark.parametrize("cross_section", CROSS_SECTIONS)
+def test_scalar_k_gives_the_same_result_as_an_array(cross_section):
+    scalar = cross_section(1.5, 1.0, 2.0 + 0.1j, 0.5)
+    array = cross_section(np.array([1.5]), 1.0, 2.0 + 0.1j, 0.5)
+
+    for s, a in zip(scalar, array):
+        np.testing.assert_allclose(s, a, rtol=1e-14)
