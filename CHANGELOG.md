@@ -31,6 +31,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The cross sections no longer return `nan` for small spheres when `nmax` is large.
   Each point now uses only the multipoles up to `wiscombe_nstop(x)`.
   Thus, one call can now calculate a sweep from small to large spheres.
+- `vector_spherical_harmonic_n(source='bohren')` now returns the Bohren & Huffman harmonic.
+  Before, it always returned zeros.
 
 ## [0.1.12] - 2023-05-24
 

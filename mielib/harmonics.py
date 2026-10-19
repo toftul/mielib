@@ -397,6 +397,14 @@ def vector_spherical_harmonic_n(m, j, rho, theta, phi, superscript=3, source='to
     match source:
         case 'toftul':
             return vsh_toftul_n(m, j, rho, theta, phi, superscript=superscript)
+        case 'bohren':
+            match parity:
+                case 'even':
+                    return vsh_bohren_ne(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
+                case 'odd':
+                    return vsh_bohren_no(m=m, n=j, rho=rho, theta=theta, phi=phi, superscript=superscript)
+                case _:
+                    return np.array([0.0, 0.0, 0.0])
         case _:
             return np.array([0.0, 0.0, 0.0])
 

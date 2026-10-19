@@ -31,3 +31,16 @@ def test_toftul_vsh_match_closed_form_for_j1(m):
     np.testing.assert_allclose(mielib.vsh_toftul_m(m, 1, rho, theta, phi, superscript=1), M, atol=1e-14)
     np.testing.assert_allclose(mielib.vsh_toftul_n(m, 1, rho, theta, phi, superscript=1), N, atol=1e-14)
     np.testing.assert_allclose(mielib.vsh_toftul_l(m, 1, rho, theta, phi, superscript=1), L, atol=1e-14)
+
+
+@pytest.mark.parametrize("parity, direct_m, direct_n", [
+    ("even", mielib.vsh_bohren_me, mielib.vsh_bohren_ne),
+    ("odd", mielib.vsh_bohren_mo, mielib.vsh_bohren_no),
+])
+def test_wrappers_return_bohren_vsh(parity, direct_m, direct_n):
+    args = dict(m=1, j=2, rho=1.3, theta=0.7, phi=0.4, superscript=1, source='bohren', parity=parity)
+    direct_args = dict(m=1, n=2, rho=1.3, theta=0.7, phi=0.4, superscript=1)
+
+    np.testing.assert_allclose(mielib.vector_spherical_harmonic_m(**args), direct_m(**direct_args))
+    np.testing.assert_allclose(mielib.vector_spherical_harmonic_n(**args), direct_n(**direct_args))
+    assert np.any(mielib.vector_spherical_harmonic_n(**args) != 0)
