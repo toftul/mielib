@@ -28,6 +28,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   `superscript` in `spherical_radial_function_z`, and `axis` in `rotation_matrix_3d_cyl`.
 - `rotation_matrix_3d_cyl` now raises `NotImplementedError` for `axis='x'` and `axis='y'`.
   Before, it returned `nan`.
+- The docstring of `optics_mie_b` now says "magnetic" Mie coefficient.
+- The docstrings of the Bohren & Huffman harmonics now call θ the polar angle and φ the azimuthal angle.
 
 ### Fixed
 

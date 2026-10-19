@@ -32,8 +32,8 @@ def vsh_bohren_me(m, n, rho, theta, phi, superscript):
         Input
         -----
             rho = k r, k = k0 n_media
-            theta = [0, pi] -- azimuthal angle
-            phi = [0, 2pi] -- polar angle
+            theta = [0, pi] -- polar angle
+            phi = [0, 2pi] -- azimuthal angle
             n = 0, 1, ...
             m = 0, ..., n
             superscript = 1, 2, 3, 4
@@ -78,8 +78,8 @@ def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
         Input
         -----
             rho = k r, k = k0 n_media
-            theta = [0, pi] -- azimuthal angle
-            phi = [0, 2pi] -- polar angle
+            theta = [0, pi] -- polar angle
+            phi = [0, 2pi] -- azimuthal angle
             n = 0, 1, ...
             m = 0, ..., n
             superscript = 1, 2, 3, 4
@@ -124,8 +124,8 @@ def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
         Input
         -----
             rho = k r, k = k0 n_media
-            theta = [0, pi] -- azimuthal angle
-            phi = [0, 2pi] -- polar angle
+            theta = [0, pi] -- polar angle
+            phi = [0, 2pi] -- azimuthal angle
             n = 0, 1, ...
             m = 0, ..., n
             superscript = 1, 2, 3, 4
@@ -172,8 +172,8 @@ def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
         Input
         -----
             rho = k r, k = k0 n_media
-            theta = [0, pi] -- azimuthal angle
-            phi = [0, 2pi] -- polar angle
+            theta = [0, pi] -- polar angle
+            phi = [0, 2pi] -- azimuthal angle
             n = 0, 1, ...
             m = 0, ..., n
             superscript = 1, 2, 3, 4

@@ -35,7 +35,7 @@ def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
 
 def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     """
-        Electric Mie coefficent. For detatails see Bohren p. 100
+        Magnetic Mie coefficent. For detatails see Bohren p. 100
 
         Arguments:
             n - 2^n multipole order
