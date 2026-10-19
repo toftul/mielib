@@ -33,6 +33,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   Thus, one call can now calculate a sweep from small to large spheres.
 - `vector_spherical_harmonic_n(source='bohren')` now returns the Bohren & Huffman harmonic.
   Before, it always returned zeros.
+- The vector spherical harmonics no longer change the `rho` and `theta` arrays of the caller.
+  Before, they replaced each zero in these arrays with `1e-15`.
 
 ## [0.1.12] - 2023-05-24
 

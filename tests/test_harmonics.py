@@ -44,3 +44,17 @@ def test_wrappers_return_bohren_vsh(parity, direct_m, direct_n):
     np.testing.assert_allclose(mielib.vector_spherical_harmonic_m(**args), direct_m(**direct_args))
     np.testing.assert_allclose(mielib.vector_spherical_harmonic_n(**args), direct_n(**direct_args))
     assert np.any(mielib.vector_spherical_harmonic_n(**args) != 0)
+
+
+@pytest.mark.parametrize("vsh", [
+    mielib.vsh_bohren_me, mielib.vsh_bohren_mo, mielib.vsh_bohren_ne, mielib.vsh_bohren_no,
+    mielib.vsh_toftul_m, mielib.vsh_toftul_n, mielib.vsh_toftul_l,
+])
+def test_vsh_do_not_change_the_input_arrays(vsh):
+    rho = np.array([0.0, 1.0], dtype=complex)
+    theta = np.array([0.0, 0.5])
+
+    vsh(1, 2, rho, theta, 0.3, superscript=1)
+
+    np.testing.assert_array_equal(rho, [0.0, 1.0])
+    np.testing.assert_array_equal(theta, [0.0, 0.5])

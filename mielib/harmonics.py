@@ -38,8 +38,8 @@ def vsh_bohren_me(m, n, rho, theta, phi, superscript):
             superscript = 1, 2, 3, 4
     '''
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -84,8 +84,8 @@ def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
             superscript = 1, 2, 3, 4
     '''
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -130,8 +130,8 @@ def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
             superscript = 1, 2, 3, 4
     '''
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -178,8 +178,8 @@ def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
             superscript = 1, 2, 3, 4
     '''
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -243,8 +243,8 @@ def vsh_toftul_m(m, j, rho, theta, phi, superscript=3):
                 3 - spherical hankel1
     """
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -280,8 +280,8 @@ def vsh_toftul_n(m, j, rho, theta, phi, superscript=3):
                 3 - spherical hankel1
     """
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
@@ -317,8 +317,8 @@ def vsh_toftul_l(m, j, rho, theta, phi, superscript=3):
                 3 - spherical hankel1
     """
     # convert input to np arrays
-    rho = np.asarray(rho, dtype=complex)
-    theta = np.asarray(theta, dtype=float)
+    rho = np.array(rho, dtype=complex)
+    theta = np.array(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
