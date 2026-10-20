@@ -20,6 +20,9 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   and the limit of P_n^m / sin θ on the axis.
 - `vsh_jackson_x` no longer returns `nan` at θ = 0 and for n = 0.
   For n = 0, it now returns zeros, because L Y_00 = 0.
+- `rotation_matrix_3d_sph` and `rotation_matrix_3d_cyl` now accept arrays of angles.
+  The matrix then has the shape (3, 3) + the shape of the angles.
+  Before, they raised `ValueError`, because some entries were the scalars 0 and 1.
 
 ## [0.2.0] - 2026-10-19
 

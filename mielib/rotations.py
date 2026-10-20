@@ -4,12 +4,18 @@ def rotation_matrix_3d_sph(theta, phi):
     """
         A^cart = R(theta, phi) A^sph
 
+        For arrays theta and phi, R has the shape (3, 3) + the broadcast shape of theta and phi.
+
         https://en.wikipedia.org/wiki/Vector_fields_in_cylindrical_and_spherical_coordinates
     """
+    # all the entries must have the same shape
+    theta, phi = np.broadcast_arrays(theta, phi)
+    zero = np.zeros(theta.shape)
+
     return np.array([
         [np.sin(theta)*np.cos(phi), np.cos(theta)*np.cos(phi), -np.sin(phi)],
         [np.sin(theta)*np.sin(phi), np.cos(theta)*np.sin(phi),  np.cos(phi)],
-        [            np.cos(theta),            -np.sin(theta),            0]
+        [            np.cos(theta),            -np.sin(theta),         zero]
     ])
 
 
@@ -29,16 +35,20 @@ def rotation_matrix_3d_cyl(phi, axis='z'):
     """
         A^cart = R(phi) A^cyl
 
+        For an array phi, R has the shape (3, 3) + the shape of phi.
+
         https://en.wikipedia.org/wiki/Vector_fields_in_cylindrical_and_spherical_coordinates
     """
     match axis:
         case 'x' | 'y':
             raise NotImplementedError("Only axis='z' is available.")
         case 'z':
+            # all the entries must have the same shape
+            zero, one = np.zeros(np.shape(phi)), np.ones(np.shape(phi))
             return np.array([
-                [np.cos(phi), -np.sin(phi), 0],
-                [np.sin(phi),  np.cos(phi), 0],
-                [          0,            0, 1],
+                [np.cos(phi), -np.sin(phi), zero],
+                [np.sin(phi),  np.cos(phi), zero],
+                [       zero,         zero,  one],
             ])
         case _:
             raise ValueError(f"axis must be 'x', 'y' or 'z', not {axis!r}")

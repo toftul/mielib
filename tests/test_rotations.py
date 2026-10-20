@@ -20,6 +20,23 @@ def test_cyl2cart_inverts_cart2cyl():
     np.testing.assert_allclose(mielib.cyl2cart(*mielib.cart2cyl(x, y, z)), (x, y, z), atol=1e-14)
 
 
+@pytest.mark.parametrize("rotation, angles", [
+    (mielib.rotation_matrix_3d_sph, (np.array([0.0, 0.4, 1.9, np.pi]), np.array([0.3, 2.0, 4.0, 6.0]))),
+    (mielib.rotation_matrix_3d_sph, (np.array([0.0, 0.4, 1.9, np.pi]), 0.5)),
+    (mielib.rotation_matrix_3d_cyl, (np.array([0.3, 2.0, 4.0, 6.0]),)),
+    (mielib.rotation_matrix_2d, (np.array([0.3, 2.0, 4.0, 6.0]),)),
+])
+def test_rotation_matrices_accept_arrays(rotation, angles):
+    R = rotation(*angles)
+    d = R.shape[0]
+
+    assert R.shape == (d, d, 4)
+    for i in range(4):
+        np.testing.assert_allclose(R[..., i], rotation(*[np.broadcast_to(a, 4)[i] for a in angles]), atol=1e-15)
+    # each matrix is orthogonal
+    np.testing.assert_allclose(np.einsum('ki...,kj...->ij...', R, R), np.broadcast_to(np.eye(d)[..., None], (d, d, 4)), atol=1e-15)
+
+
 def test_unknown_cylinder_axis_raises():
     with pytest.raises(NotImplementedError):
         mielib.rotation_matrix_3d_cyl(0.3, axis='x')
