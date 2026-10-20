@@ -32,7 +32,7 @@ def _bohren_legendre(m, n, theta):
         All three are finite on the z axis, θ = 0 and θ = π.
     """
     # sph_legendre_p takes θ and not cos θ. Thus, it keeps the precision near the poles,
-    # where cos θ = 1 in floating point for θ < 1.5e-8.
+    # where cos θ = 1 in floating point for θ < 2^(-26.5) ≈ 1.05e-8.
     # sph_legendre_p has the Condon-Shortley phase and the normalization of Y_n^m.
     scale = (-1)**m * np.sqrt(4*np.pi / (2*n+1)) * np.exp(0.5 * (sp.gammaln(n+m+1) - sp.gammaln(n-m+1)))
     Pnm, dPnm = scale * sp.sph_legendre_p(n, m, theta, diff_n=1)
