@@ -6,6 +6,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-21
+
 ### Fixed
 
 - The Bohren & Huffman harmonics `vsh_bohren_me`, `vsh_bohren_mo`, `vsh_bohren_ne` and `vsh_bohren_no`
@@ -86,6 +88,7 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 This is the last release before this changelog.
 For older changes, see the git history.
 
-[Unreleased]: https://github.com/toftul/mielib/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/toftul/mielib/compare/0.2.1...HEAD
+[0.2.1]: https://github.com/toftul/mielib/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/toftul/mielib/compare/0.1.12...0.2.0
 [0.1.12]: https://github.com/toftul/mielib/releases/tag/0.1.12
