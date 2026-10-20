@@ -4,7 +4,7 @@ from pathlib import Path
 
 import mielib
 
-MODULES = [mielib.special, mielib.vsh, mielib.mieacoustics, mielib.mieoptics, mielib.rotations]
+MODULES = [mielib.special, mielib.vsh, mielib.mieacoustics, mielib.mieoptics, mielib.coordinates]
 
 
 def test_all_lists_each_public_function_once():

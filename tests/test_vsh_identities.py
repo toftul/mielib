@@ -5,8 +5,7 @@ import numpy as np
 import pytest
 import scipy.special as sp
 
-import mielib
-from mielib import vsh
+from mielib import coordinates, special, vsh
 
 # points off the z axis, one point in each column
 POINTS = np.array([
@@ -18,9 +17,8 @@ POINTS = np.array([
 
 def cart_field(harmonic, j, m, X, **options):
     """Cartesian components of a harmonic at the Cartesian points X."""
-    r, theta, phi = mielib.cart2sph(*X)
-    A = harmonic(j, m, r, theta, phi, **options)
-    return np.einsum('ij...,j...->i...', mielib.rotation_matrix_3d_sph(theta, phi), A)
+    r, theta, phi = coordinates.cart2sph(*X)
+    return coordinates.vector_sph2cart(harmonic(j, m, r, theta, phi, **options), theta, phi)
 
 
 def jacobian(f, X, h=1e-3):
@@ -58,8 +56,8 @@ def test_complex_vsh_differential_identities(j, m, superscript):
     L = field(vsh.L)
     J_M, J_N, J_L = jacobian(M, POINTS), jacobian(N, POINTS), jacobian(L, POINTS)
 
-    r, theta, phi = mielib.cart2sph(*POINTS)
-    psi = mielib.special.spherical_z(j, r, superscript=superscript) * sp.sph_harm_y(j, m, theta, phi)
+    r, theta, phi = coordinates.cart2sph(*POINTS)
+    psi = special.spherical_z(j, r, superscript=superscript) * sp.sph_harm_y(j, m, theta, phi)
 
     scale = max(np.max(np.abs(F(POINTS))) for F in (M, N, L))
     assert_zero_or_equal(div(J_M), 0, scale)
@@ -122,8 +120,8 @@ def test_complex_vsh_are_orthogonal(superscript):
     M, N, L = harmonics(vsh.M), harmonics(vsh.N), harmonics(vsh.L)
 
     j = np.array([j for j, _ in labels])
-    z = mielib.special.spherical_z(j, rho, superscript=superscript)
-    zp = mielib.special.spherical_z(j, rho, superscript=superscript, derivative=1)
+    z = special.spherical_z(j, rho, superscript=superscript)
+    zp = special.spherical_z(j, rho, superscript=superscript, derivative=1)
     d = (z + rho * zp) / rho  # (rho z)' / rho
     jj = j * (j + 1)
 
