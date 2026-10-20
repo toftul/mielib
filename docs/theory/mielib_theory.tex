@@ -1,0 +1,704 @@
+\documentclass[
+    pra,
+    aps,
+    reprint,
+    onecolumn,
+    amsmath,amssymb,
+    a4paper,
+    superscriptaddress,
+    10pt,
+    nofootinbib
+]{revtex4-2}
+
+% ===================== Packages =====================
+\usepackage{times}
+\usepackage{helvet}
+\usepackage[T1]{fontenc}
+\usepackage{physics}
+\usepackage{upgreek}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{rmpblue}{HTML}{2e3092}
+\emergencystretch=1.5em
+\usepackage{booktabs}
+\usepackage{enumitem}
+\setlist[enumerate]{label=(\roman*)}
+\setlist[itemize]{label=--}
+\usepackage[
+    colorlinks=true,
+    citecolor=rmpblue,
+    linkcolor=rmpblue,
+    urlcolor=rmpblue,
+    filecolor=magenta
+]{hyperref}
+
+% ===================== Macros =======================
+\newcommand{\iu}{\mathrm{i}\mkern1mu}                 % imaginary unit
+\newcommand{\eu}{\mathrm{e}\mkern1mu}                 % Euler's number
+\newcommand{\ort}[1]{\boldsymbol{\mathbf{\bar{#1}}}}  % unit vector (thesis convention)
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\IT}[1]{\red{[\textbf{Vanya:} #1]}}
+\newcommand{\affilANU}{Research School of Physics, Australian National University, Canberra ACT 2601, Australia}
+\newcommand{\jj}{j(j+1)}
+\newcommand{\eb}{\bar{\varepsilon}}
+\newcommand{\mb}{\bar{\mu}}
+\newcommand{\rb}{\bar{\rho}}
+\newcommand{\bb}{\bar{\beta}}
+
+\begin{document}
+
+\title{Vector spherical harmonics and Mie scattering in optics and acoustics: conventions and explicit formulas}
+
+\author{Ivan Toftul}
+\email{toftul.ivan@gmail.com}
+\affiliation{\affilANU}
+
+\date{\today}
+
+\begin{abstract}
+This note collects the definitions and the explicit formulas for the scattering of electromagnetic and acoustic waves by a homogeneous sphere.
+It fixes one set of conventions for the spherical Bessel functions, the scalar and vector spherical harmonics, the plane-wave expansions, the multipole decomposition of a given field, and the electromagnetic and acoustic Mie problems.
+The electromagnetic part uses the dual-symmetric fields $\sqrt{\varepsilon}\vb{E}$ and $\sqrt{\mu}\vb{H}$ and the complex vector spherical harmonics of Ref.~\cite{Thesis}.
+One sign convention for the $T$ matrix covers both optics and acoustics.
+\end{abstract}
+
+\maketitle
+
+% =====================================================================
+\section{Conventions}
+\label{sec:conventions}
+
+All fields are monochromatic with the time dependence $\eu^{-\iu\omega t}$.
+A real field is $\boldsymbol{\mathcal{A}}(\vb{r}, t) = \Re[\vb{A}(\vb{r})\, \eu^{-\iu\omega t}]$.
+We use spherical coordinates $(r, \vartheta, \varphi)$ with the polar angle $\vartheta \in [0, \pi]$ and the unit vectors $\ort{r}$, $\ort{\vartheta}$, $\ort{\varphi}$.
+
+\paragraph{Electromagnetism.}
+A homogeneous host has the absolute permittivity $\varepsilon$ and permeability $\mu$.
+A sphere of radius $a$ has $\varepsilon_p$ and $\mu_p$.
+We use
+\begin{equation}
+    k = \omega\sqrt{\varepsilon\mu}, \qquad
+    k_p = \omega \sqrt{\varepsilon_p \mu_p} = m k, \qquad
+    m = \sqrt{\eb \mb}, \qquad
+    \eb = \frac{\varepsilon_p}{\varepsilon}, \quad
+    \mb = \frac{\mu_p}{\mu}, \qquad
+    x = k a .
+    \label{eq:params}
+\end{equation}
+The square roots take the principal branch, so $\Im k_p \geq 0$ for a passive particle.
+We write all electromagnetic formulas for the dual-symmetric pair $(\sqrt{\varepsilon}\vb{E}, \sqrt{\mu}\vb{H})$, as in Ref.~\cite{Thesis}.
+With a dimensional amplitude $\mathcal{A}$, $[\mathcal{A}] = [\sqrt{\varepsilon}\vb{E}] = [\sqrt{\mu}\vb{H}]$, the normalized fields
+\begin{equation}
+    \vb{e} = \frac{\sqrt{\varepsilon}\vb{E}}{\mathcal{A}}, \qquad
+    \vb{h} = \frac{\sqrt{\mu}\vb{H}}{\mathcal{A}}
+    \label{eq:eh}
+\end{equation}
+obey the source-free Maxwell equations
+\begin{equation}
+    \curl \vb{e} = \iu k\, \vb{h}, \qquad
+    \curl \vb{h} = -\iu k\, \vb{e} .
+    \label{eq:maxwell_eh}
+\end{equation}
+The time-averaged Poynting vector is $\vb{S} = \frac{1}{2}\Re(\vb{E}^* \times \vb{H}) = \frac{v}{2} |\mathcal{A}|^2 \Re(\vb{e}^* \times \vb{h})$ with the phase velocity $v = 1/\sqrt{\varepsilon\mu}$.
+Equations~\eqref{eq:maxwell_eh} are invariant under the duality transformation
+\begin{equation}
+    \vb{e} \to \vb{h}, \qquad \vb{h} \to -\vb{e}.
+    \label{eq:duality}
+\end{equation}
+A field of helicity $\sigma = \pm 1$ obeys $\vb{h} = -\iu \sigma \vb{e}$.
+The value $\sigma = +1$ is the left circular polarization (LCP) of Ref.~\cite{Thesis}, Chap.~4.
+The Riemann--Silberstein vectors $\vb{F}_{\pm} = (\vb{e} \pm \iu \vb{h})/\sqrt{2}$ separate the two helicities: a field of helicity $\sigma$ has $\vb{F}_{-\sigma} = 0$.
+The circular unit vectors are $\ort{e}_{\pm} = (\ort{x} \pm \iu \ort{y})/\sqrt{2}$.
+The cross sections need a lossless host, $\Im(\varepsilon\mu) = 0$, because in a lossy host the scattered field decays and its flux through a far sphere is not defined.
+
+\paragraph{Acoustics.}
+A fluid host has the density $\rho$ and the compressibility $\beta$.
+The sphere has $\rho_p$ and $\beta_p$.
+We use $k = \omega\sqrt{\rho\beta}$, $k_p = k\sqrt{\rb\bb}$, $\rb = \rho_p/\rho$, $\bb = \beta_p/\beta$, and the sound speed $c = 1/\sqrt{\rho\beta}$.
+The pressure $p$ gives the velocity $\vb{v} = \grad p/(\iu\omega\rho)$.
+
+% =====================================================================
+\section{Radial functions}
+\label{sec:radial}
+
+The radial functions $z_j^{(s)}(\rho)$, $s = 1, \dots, 4$, are
+\begin{equation}
+    z_j^{(1)} = j_j, \qquad
+    z_j^{(2)} = y_j, \qquad
+    z_j^{(3)} = h^{(1)}_j = j_j + \iu y_j, \qquad
+    z_j^{(4)} = h^{(2)}_j = j_j - \iu y_j .
+    \label{eq:zj}
+\end{equation}
+A field regular at the origin uses $s = 1$.
+An outgoing field uses $s = 3$.
+All four functions obey the same recurrences,
+\begin{gather}
+    z_j' = z_{j-1} - \frac{j+1}{\rho} z_j = -z_{j+1} + \frac{j}{\rho} z_j,
+    \label{eq:zprime}
+    \\
+    z_j'' = \frac{j\, z_{j-1}' - (j+1)\, z_{j+1}'}{2j+1} = -\frac{2}{\rho} z_j' - \left[ 1 - \frac{\jj}{\rho^2} \right] z_j .
+    \label{eq:zpp}
+\end{gather}
+For $j = 0$ the term with $z_{j-1}'$ has zero weight.
+The electric harmonic needs the combination
+\begin{equation}
+    \zeta_j(\rho) = \frac{[\rho\, z_j(\rho)]'}{\rho} = \frac{z_j}{\rho} + z_j' .
+    \label{eq:zeta}
+\end{equation}
+For real $\rho$, $z_j$ and $\zeta_j$ have no common zero, because $\rho z_j$ and its derivative cannot vanish together for a nonzero solution of a second-order equation.
+The Wronskians are
+\begin{equation}
+    j_j y_j' - j_j' y_j = \frac{1}{\rho^2}, \qquad
+    j_j h_j' - j_j' h_j = \frac{\iu}{\rho^2}, \qquad
+    \psi_n \xi_n' - \psi_n' \xi_n = \iu,
+    \label{eq:wronskian}
+\end{equation}
+with $h_j \equiv h_j^{(1)}$ and the Riccati--Bessel functions
+\begin{equation}
+    \psi_n(\rho) = \rho\, j_n(\rho), \qquad
+    \xi_n(\rho) = \rho\, h^{(1)}_n(\rho), \qquad
+    \psi_n' = \psi_{n-1} - \frac{n}{\rho}\psi_n, \qquad
+    \xi_n' = \xi_{n-1} - \frac{n}{\rho}\xi_n .
+    \label{eq:riccati}
+\end{equation}
+We also use the logarithmic derivative $D_n(z) = \psi_n'(z)/\psi_n(z)$.
+For $\rho \gg j^2$ the outgoing functions become
+\begin{equation}
+    h_j(\rho) \simeq (-\iu)^{j+1} \frac{\eu^{\iu\rho}}{\rho}, \qquad
+    \zeta_j^{(3)}(\rho) \simeq (-\iu)^{j} \frac{\eu^{\iu\rho}}{\rho},
+    \label{eq:hankel_far}
+\end{equation}
+with corrections of order $j^2/\rho$.
+
+% =====================================================================
+\section{Scalar spherical harmonics and Legendre functions}
+\label{sec:scalar}
+
+We use the orthonormal harmonics with the Condon--Shortley phase $(-1)^m$~\cite{Thesis,Toftul2023PRL},
+\begin{equation}
+    Y_{mj}(\vartheta, \varphi) = \kappa_{mj}\, P_j^m(\cos\vartheta)\, \eu^{\iu m\varphi}, \qquad
+    \kappa_{mj} = \sqrt{\frac{2j+1}{4\pi}\frac{(j-m)!}{(j+m)!}}, \qquad
+    P_j^m(x) = (-1)^m (1-x^2)^{m/2} \dv[m]{x} P_j(x),
+    \label{eq:Ymj}
+\end{equation}
+so that $Y_{-m,j} = (-1)^m Y_{mj}^*$ and $\int_{4\pi} \dd\Omega\, Y_{mj} Y^*_{m'j'} = \delta_{jj'}\delta_{mm'}$.
+The polar derivative is
+\begin{equation}
+    \partial_\vartheta Y_{mj} = m \cot\vartheta\; Y_{mj} + \sqrt{(j-m)(j+m+1)}\; \eu^{-\iu\varphi}\, Y_{m+1,j},
+    \label{eq:dY}
+\end{equation}
+where the last term is absent for $m = j$.
+
+\paragraph{Pole limits.}
+The vector harmonics below contain $m Y_{mj}/\sin\vartheta$.
+At the poles this ratio is finite and nonzero only for $m = \pm 1$.
+L'H\^opital's rule with $\sin\vartheta \simeq \vartheta$ or $\pi - \vartheta$ gives
+\begin{equation}
+    \lim_{\vartheta \to 0} \frac{m Y_{mj}}{\sin\vartheta} = m\, \partial_\vartheta Y_{mj}\big|_{\vartheta = 0}, \qquad
+    \lim_{\vartheta \to \pi} \frac{m Y_{mj}}{\sin\vartheta} = -m\, \partial_\vartheta Y_{mj}\big|_{\vartheta = \pi} .
+    \label{eq:pole_Y}
+\end{equation}
+
+\paragraph{Angular functions of Bohren and Huffman.}
+Bohren and Huffman~\cite{Bohren1984} use the associated Legendre functions \emph{without} the Condon--Shortley phase,
+\begin{equation}
+    \mathcal{P}_n^m(x) = (-1)^m P_n^m(x) = (1-x^2)^{m/2} \dv[m]{x} P_n(x) .
+    \label{eq:P_BH}
+\end{equation}
+With them we define, for $m \geq 0$,
+\begin{equation}
+    \pi_n^m(\vartheta) = \frac{m\, \mathcal{P}_n^m(\cos\vartheta)}{\sin\vartheta}, \qquad
+    \tau_n^m(\vartheta) = \dv{\vartheta}\mathcal{P}_n^m(\cos\vartheta), \qquad
+    \pi_n \equiv \pi_n^1, \quad \tau_n \equiv \tau_n^1 .
+    \label{eq:pitau}
+\end{equation}
+The dipole-type functions obey $\pi_0 = 0$, $\pi_1 = 1$, and
+\begin{equation}
+    \pi_n = \frac{2n-1}{n-1}\, \mu\, \pi_{n-1} - \frac{n}{n-1}\, \pi_{n-2}, \qquad
+    \tau_n = n \mu\, \pi_n - (n+1)\, \pi_{n-1}, \qquad \mu = \cos\vartheta .
+    \label{eq:pitau_rec}
+\end{equation}
+Their pole values are
+\begin{equation}
+    \pi_n(0) = \tau_n(0) = \frac{n(n+1)}{2}, \qquad
+    \pi_n(\pi) = (-1)^{n+1}\frac{n(n+1)}{2}, \qquad
+    \tau_n(\pi) = (-1)^{n}\frac{n(n+1)}{2},
+    \label{eq:pitau_pole}
+\end{equation}
+and $\pi_n^m = 0$ at both poles for $m \neq 1$.
+In general $\pi^m_n(0) = m\,\tau^m_n(0)$ and $\pi^m_n(\pi) = -m\,\tau^m_n(\pi)$, as in Eq.~\eqref{eq:pole_Y}.
+
+% =====================================================================
+\section{Vector spherical harmonics}
+\label{sec:vsh}
+
+\paragraph{Angular harmonics.}
+From $Y_{mj}$ we build two tangential fields on the unit sphere,
+\begin{equation}
+    \vb{\Psi}_{mj} = r\grad Y_{mj} = \ort{\vartheta}\, \partial_\vartheta Y_{mj} + \ort{\varphi}\, \frac{\iu m}{\sin\vartheta} Y_{mj}, \qquad
+    \vb{\Phi}_{mj} = \ort{r} \times \vb{\Psi}_{mj} = -\ort{\vartheta}\, \frac{\iu m}{\sin\vartheta} Y_{mj} + \ort{\varphi}\, \partial_\vartheta Y_{mj} .
+    \label{eq:PsiPhi}
+\end{equation}
+With $Y_{mj}\ort{r}$ they are orthogonal on the sphere,
+\begin{equation}
+    \int_{4\pi}\dd\Omega\; \vb{\Psi}_{mj}\cdot\vb{\Psi}^*_{m'j'} = \int_{4\pi}\dd\Omega\; \vb{\Phi}_{mj}\cdot\vb{\Phi}^*_{m'j'} = \jj\, \delta_{jj'}\delta_{mm'}, \qquad
+    \int_{4\pi}\dd\Omega\; \vb{\Psi}_{mj}\cdot\vb{\Phi}^*_{m'j'} = 0 .
+    \label{eq:PsiPhi_orth}
+\end{equation}
+The harmonics of Jackson~\cite[Sec.~9.7]{Jackson1998}, $\vb{X}_{lm} = \hat{\vb{L}} Y_{ml}/\sqrt{l(l+1)}$ with $\hat{\vb{L}} = -\iu\vb{r}\times\grad$, are $\vb{X}_{jm} = -\iu\, \vb{\Phi}_{mj}/\sqrt{\jj}$.
+They vanish for $j = 0$.
+
+\paragraph{Complex vector harmonics.}
+Following Refs.~\cite{Thesis,Toftul2023PRL}, we take the scalar solution $\psi_{mj} = z_j(kr) Y_{mj}(\vartheta, \varphi)$ and define the dimensionless harmonics
+\begin{equation}
+    \vb{M}_{mj} = \curl(\vb{r}\, \psi_{mj}), \qquad
+    \vb{N}_{mj} = \frac{1}{k}\curl\vb{M}_{mj}, \qquad
+    \vb{L}_{mj} = \frac{1}{k}\grad\psi_{mj} .
+    \label{eq:MNL_def}
+\end{equation}
+With $\rho = kr$, Eqs.~\eqref{eq:zeta} and \eqref{eq:PsiPhi} give the compact forms
+\begin{equation}
+    \vb{M}_{mj} = -z_j\, \vb{\Phi}_{mj}, \qquad
+    \vb{N}_{mj} = \jj \frac{z_j}{\rho}\, Y_{mj}\ort{r} + \zeta_j\, \vb{\Psi}_{mj}, \qquad
+    \vb{L}_{mj} = z_j'\, Y_{mj}\ort{r} + \frac{z_j}{\rho}\, \vb{\Psi}_{mj},
+    \label{eq:MNL}
+\end{equation}
+or, in components,
+\begin{align}
+    \vb{M}_{mj} &= \ort{\vartheta}\, \frac{\iu m}{\sin\vartheta} z_j Y_{mj} - \ort{\varphi}\, z_j\, \partial_\vartheta Y_{mj}, \nonumber \\
+    \vb{N}_{mj} &= \ort{r}\, \jj \frac{z_j}{\rho} Y_{mj} + \ort{\vartheta}\, \zeta_j\, \partial_\vartheta Y_{mj} + \ort{\varphi}\, \frac{\iu m}{\sin\vartheta} \zeta_j Y_{mj},
+    \label{eq:MNL_comp} \\
+    \vb{L}_{mj} &= \ort{r}\, z_j' Y_{mj} + \ort{\vartheta}\, \frac{z_j}{\rho}\, \partial_\vartheta Y_{mj} + \ort{\varphi}\, \frac{\iu m}{\sin\vartheta} \frac{z_j}{\rho} Y_{mj} . \nonumber
+\end{align}
+The magnetic harmonic is also $\vb{M}_{mj} = -\iu\hat{\vb{L}}\psi_{mj} = -\iu\sqrt{\jj}\, z_j \vb{X}_{jm}$.
+The harmonics obey
+\begin{equation}
+    \curl\vb{M}_{mj} = k\vb{N}_{mj}, \qquad
+    \curl\vb{N}_{mj} = k\vb{M}_{mj}, \qquad
+    \div\vb{M}_{mj} = \div\vb{N}_{mj} = 0, \qquad
+    \curl\vb{L}_{mj} = 0, \qquad
+    \div\vb{L}_{mj} = -k\psi_{mj},
+    \label{eq:MNL_identities}
+\end{equation}
+and, for real $z_j$, $\vb{W}_{-m,j} = (-1)^m \vb{W}^*_{mj}$ with $\vb{W} = \vb{M}, \vb{N}, \vb{L}$.
+On a sphere of radius $r$ the nonzero integrals are~\cite{Stratton2007,Thesis}
+\begin{align}
+    \int_{4\pi}\dd\Omega\, |\vb{M}_{mj}|^2 &= \jj |z_j|^2, &
+    \int_{4\pi}\dd\Omega\, |\vb{N}_{mj}|^2 &= \frac{\jj}{2j+1}\left[(j+1)|z_{j-1}|^2 + j|z_{j+1}|^2\right], \nonumber \\
+    \int_{4\pi}\dd\Omega\, |\vb{L}_{mj}|^2 &= \frac{j|z_{j-1}|^2 + (j+1)|z_{j+1}|^2}{2j+1}, &
+    \int_{4\pi}\dd\Omega\, \vb{L}^*_{mj}\cdot\vb{N}_{mj} &= \frac{\jj}{2j+1}\left[|z_{j-1}|^2 - |z_{j+1}|^2\right] .
+    \label{eq:MNL_norms}
+\end{align}
+At the origin the regular harmonics vanish, except $\vb{N}_{m1}(0) = \frac{2}{3}\grad(r Y_{m1})$, which is a constant vector.
+
+\paragraph{Vector components.}
+A vector with spherical components $(A_r, A_\vartheta, A_\varphi)$ has the Cartesian components
+\begin{equation}
+    \begin{pmatrix} A_x \\ A_y \\ A_z \end{pmatrix} =
+    \begin{pmatrix}
+        \sin\vartheta\cos\varphi & \cos\vartheta\cos\varphi & -\sin\varphi \\
+        \sin\vartheta\sin\varphi & \cos\vartheta\sin\varphi & \cos\varphi \\
+        \cos\vartheta & -\sin\vartheta & 0
+    \end{pmatrix}
+    \begin{pmatrix} A_r \\ A_\vartheta \\ A_\varphi \end{pmatrix}.
+    \label{eq:rotation}
+\end{equation}
+The columns are $\ort{r}$, $\ort{\vartheta}$, $\ort{\varphi}$, and the inverse is the transpose.
+The angles of a point are $\vartheta = \operatorname{atan2}(\sqrt{x^2+y^2}, z)$ and $\varphi = \operatorname{atan2}(y, x)$.
+
+% =====================================================================
+\section{Plane waves}
+\label{sec:planewaves}
+
+\paragraph{Scalar.}
+A scalar plane wave with the unit wave vector $\ort{k}$ is
+\begin{equation}
+    \eu^{\iu\vb{k}\cdot\vb{r}} = 4\pi\sum_{j=0}^\infty \iu^j j_j(kr) \sum_{m=-j}^{j} Y_{mj}(\ort{r})\, Y^*_{mj}(\ort{k}), \qquad
+    \eu^{\iu kz} = \sum_{n=0}^\infty \iu^n (2n+1)\, j_n(kr)\, P_n(\cos\vartheta).
+    \label{eq:pw_scalar}
+\end{equation}
+
+\paragraph{Vector.}
+A source-free field expands as~\cite{Thesis}
+\begin{equation}
+    \vb{e} = \sum_{mj}\left( A_{mj}\vb{N}_{mj} + B_{mj}\vb{M}_{mj}\right), \qquad
+    \vb{h} = -\iu\sum_{mj}\left( B_{mj}\vb{N}_{mj} + A_{mj}\vb{M}_{mj}\right),
+    \label{eq:vsh_expansion}
+\end{equation}
+with $\sum_{mj} \equiv \sum_{j=1}^\infty\sum_{m=-j}^j$.
+The electric amplitudes $A_{mj}$ multiply $\vb{N}$ in $\vb{e}$.
+The magnetic amplitudes $B_{mj}$ multiply $\vb{M}$ in $\vb{e}$.
+Equation~\eqref{eq:maxwell_eh} fixes $\vb{h}$, and the duality~\eqref{eq:duality} acts as $(A_{mj}, B_{mj}) \to (-\iu B_{mj}, -\iu A_{mj})$.
+A plane wave $\vb{e} = \vb{e}_0\, \eu^{\iu\vb{k}\cdot\vb{r}}$, $\vb{h} = (\ort{k}\times\vb{e}_0)\, \eu^{\iu\vb{k}\cdot\vb{r}}$ with $\vb{e}_0\cdot\ort{k} = 0$ has $z_j = j_j$ and
+\begin{equation}
+    A_{mj} = -\frac{4\pi\, \iu^{j+1}}{\jj}\, \vb{e}_0\cdot\vb{\Psi}^*_{mj}(\ort{k}), \qquad
+    B_{mj} = -\frac{4\pi\, \iu^{j}}{\jj}\, \vb{e}_0\cdot\vb{\Phi}^*_{mj}(\ort{k}),
+    \label{eq:pw_AB}
+\end{equation}
+where $\vb{\Psi}_{mj}(\ort{k})$ and $\vb{\Phi}_{mj}(\ort{k})$ are Eq.~\eqref{eq:PsiPhi} at the angles of $\ort{k}$, written in Cartesian components with Eq.~\eqref{eq:rotation}.
+For a general $\ort{k}$, Eq.~\eqref{eq:pw_AB} contains all $m$.
+
+For $\ort{k} = \ort{z}$ only $m = \pm1$ survive.
+A circular wave $\vb{e}_0 = \ort{e}_\sigma$ has
+\begin{equation}
+    A_{mj} = \sigma \frac{\eta_j}{\sqrt{2}}\, \delta_{m\sigma}, \qquad
+    B_{mj} = \frac{\eta_j}{\sqrt{2}}\, \delta_{m\sigma}, \qquad
+    \eta_j = \iu^{j+1}\sqrt{\frac{4\pi(2j+1)}{\jj}},
+    \label{eq:pw_helical}
+\end{equation}
+where $\eta_j$ is $\beta_j$ of Ref.~\cite{Thesis}.
+A linear wave $\vb{e}_0 = \ort{x}$ has $A_{\pm1, j} = \pm\eta_j/2$ and $B_{\pm1, j} = \eta_j/2$.
+
+\paragraph{Helicity amplitudes.}
+The combinations
+\begin{equation}
+    C^{\sigma}_{mj} = \frac{A_{mj} + \sigma B_{mj}}{2}, \qquad
+    \vb{e} = \sum_{\sigma = \pm}\sum_{mj} C^\sigma_{mj}\left(\vb{N}_{mj} + \sigma\vb{M}_{mj}\right), \qquad
+    \vb{F}_\sigma = \sqrt{2}\sum_{mj} C^\sigma_{mj}\left(\vb{N}_{mj} + \sigma\vb{M}_{mj}\right)
+    \label{eq:helicity_amplitudes}
+\end{equation}
+split a field into its two helicities.
+The harmonic $\vb{N}_{mj} + \sigma\vb{M}_{mj}$ is an eigenfunction of the curl with the eigenvalue $\sigma k$.
+The circular wave~\eqref{eq:pw_helical} has only $C^{\sigma}_{\sigma j} = \sigma\eta_j/\sqrt{2}$.
+
+% =====================================================================
+\section{Decomposition of a given field}
+\label{sec:decomposition}
+
+\paragraph{Projections.}
+Let a field on a sphere of radius $r$ be $\vb{e} = \sum_{mj}(A_{mj}\vb{N}_{mj} + B_{mj}\vb{M}_{mj} + C_{mj}\vb{L}_{mj})$ with known $z_j$.
+The orthogonality~\eqref{eq:PsiPhi_orth} gives three projections,
+\begin{align}
+    e^{Y}_{mj} &\equiv \int_{4\pi}\dd\Omega\, Y^*_{mj}\, (\ort{r}\cdot\vb{e}) = \jj\frac{z_j}{\rho}A_{mj} + z_j' C_{mj}, \nonumber \\
+    e^{\Psi}_{mj} &\equiv \int_{4\pi}\dd\Omega\, \vb{\Psi}^*_{mj}\cdot\vb{e} = \jj\left[\zeta_j A_{mj} + \frac{z_j}{\rho} C_{mj}\right],
+    \label{eq:projections} \\
+    e^{\Phi}_{mj} &\equiv \int_{4\pi}\dd\Omega\, \vb{\Phi}^*_{mj}\cdot\vb{e} = -\jj\, z_j B_{mj} . \nonumber
+\end{align}
+The first two lines are a $2\times2$ system for $A_{mj}$ and $C_{mj}$.
+For a source-free field $C_{mj} = 0$, and the magnetic field~\eqref{eq:vsh_expansion} adds the projections
+\begin{equation}
+    h^{Y}_{mj} = -\iu\jj\frac{z_j}{\rho}B_{mj}, \qquad
+    h^{\Psi}_{mj} = -\iu\jj\,\zeta_j B_{mj}, \qquad
+    h^{\Phi}_{mj} = \iu\jj\, z_j A_{mj} .
+    \label{eq:projections_h}
+\end{equation}
+The radial projections $e^Y$ and $h^Y$ alone give the projection formula of Ref.~\cite{Thesis}, Chap.~2:
+\begin{equation}
+    A_{mj} = \frac{kr}{\jj\, z_j(kr)}\int_{4\pi}\dd\Omega\, Y^*_{mj}\,(\vb{e}\cdot\ort{r}), \qquad
+    B_{mj} = \frac{\iu kr}{\jj\, z_j(kr)}\int_{4\pi}\dd\Omega\, Y^*_{mj}\,(\vb{h}\cdot\ort{r}) .
+    \label{eq:AB_radial}
+\end{equation}
+
+\paragraph{Zeros of the radial functions.}
+Equation~\eqref{eq:AB_radial} divides by $z_j(kr)$.
+For an outgoing field $h_j(kr)$ has no real zeros.
+For a regular field Eq.~\eqref{eq:AB_radial} is undefined at the zeros of $j_j(kr)$.
+The tangential projections of $\vb{e}$ and $\vb{h}$ together determine the amplitudes at every radius, because $z_j$ and $\zeta_j$ have no common zero.
+One such combination is
+\begin{equation}
+    A_{mj} = \frac{\zeta_j^*\, e^{\Psi}_{mj} - \iu z_j^*\, h^{\Phi}_{mj}}{\jj\left(|z_j|^2 + |\zeta_j|^2\right)}, \qquad
+    B_{mj} = \frac{-z_j^*\, e^{\Phi}_{mj} + \iu\zeta_j^*\, h^{\Psi}_{mj}}{\jj\left(|z_j|^2 + |\zeta_j|^2\right)} .
+    \label{eq:AB_lsq}
+\end{equation}
+
+\paragraph{Scalar fields.}
+A pressure field $p = \sum_{mj} C_{mj}\, z_j(kr)\, Y_{mj}$ gives
+\begin{equation}
+    C_{mj} = \frac{1}{z_j(kr)}\int_{4\pi}\dd\Omega\, Y^*_{mj}\, p, \qquad
+    \int_{4\pi}\dd\Omega\, Y^*_{mj}\, \rho c\, v_r = -\iu\, C_{mj}\, z_j'(kr) .
+    \label{eq:scalar_projection}
+\end{equation}
+The two projections have no common zero, and they combine as in Eq.~\eqref{eq:AB_lsq}.
+A plane wave $p = p_0\,\eu^{\iu\vb{k}\cdot\vb{r}}$ has $C_{mj} = 4\pi\, \iu^j\, Y^*_{mj}(\ort{k})\, p_0$ with $z_j = j_j$.
+
+% =====================================================================
+\section{Electromagnetic Mie problem}
+\label{sec:mie_em}
+
+\paragraph{Fields.}
+Outside the sphere the field is the incident part, with $z_j = j_j(kr)$ and amplitudes $(A_{mj}, B_{mj})$, plus the scattered part, with $z_j = h_j(kr)$ and amplitudes $(A^{\rm sc}_{mj}, B^{\rm sc}_{mj})$, both in the form~\eqref{eq:vsh_expansion}.
+Inside, we normalize the fields with the particle parameters:
+\begin{equation}
+    \frac{\sqrt{\varepsilon_p}\vb{E}}{\mathcal{A}} = \sum_{mj}\left( A^{\rm in}_{mj}\vb{N}_{mj} + B^{\rm in}_{mj}\vb{M}_{mj}\right), \qquad
+    \frac{\sqrt{\mu_p}\vb{H}}{\mathcal{A}} = -\iu\sum_{mj}\left( B^{\rm in}_{mj}\vb{N}_{mj} + A^{\rm in}_{mj}\vb{M}_{mj}\right),
+    \label{eq:internal_fields}
+\end{equation}
+with $z_j = j_j(k_p r)$.
+The tangential $\vb{E}$ and $\vb{H}$ are continuous at $r = a$.
+
+\paragraph{Coefficients.}
+The boundary conditions do not mix $m$, $j$, or the two types of harmonics.
+Thus the sphere is a diagonal $T$ matrix~\cite{Gouesbet2010OC,Thesis}.
+We define $T$ as the outgoing amplitude divided by the regular amplitude of the same multipole:
+\begin{equation}
+    A^{\rm sc}_{mj} = T^e_j A_{mj}, \qquad
+    B^{\rm sc}_{mj} = T^m_j B_{mj}, \qquad
+    A^{\rm in}_{mj} = \frac{\iu m^2}{\mathcal{D}^a_j} A_{mj}, \qquad
+    B^{\rm in}_{mj} = \frac{\iu m^2}{\mathcal{D}^b_j} B_{mj}, \qquad
+    T^e_n = -a_n, \quad T^m_n = -b_n .
+    \label{eq:Tmatrix}
+\end{equation}
+Here $a_n$ and $b_n$ are the published Mie coefficients of Refs.~\cite{Bohren1984,Thesis} [Appendix ``Polarizabilities and Mie theory'' of Ref.~\cite{Thesis}],
+\begin{equation}
+    a_n = \frac{\sqrt{\eb}\,\psi_n(mx)\psi_n'(x) - \sqrt{\mb}\,\psi_n(x)\psi_n'(mx)}{\mathcal{D}^a_n}, \qquad
+    b_n = \frac{\sqrt{\mb}\,\psi_n(mx)\psi_n'(x) - \sqrt{\eb}\,\psi_n(x)\psi_n'(mx)}{\mathcal{D}^b_n},
+    \label{eq:ab}
+\end{equation}
+with the denominators
+\begin{equation}
+    \mathcal{D}^a_n = \sqrt{\eb}\,\psi_n(mx)\xi_n'(x) - \sqrt{\mb}\,\xi_n(x)\psi_n'(mx), \qquad
+    \mathcal{D}^b_n = \sqrt{\mb}\,\psi_n(mx)\xi_n'(x) - \sqrt{\eb}\,\xi_n(x)\psi_n'(mx) .
+    \label{eq:Dab}
+\end{equation}
+The published coefficients carry the opposite sign to $T$: the scattered amplitude is $-a_n$ ($-b_n$) times the incident one.
+The coefficient $b_n$ is $a_n$ with $\eb \leftrightarrow \mb$, and the same swap maps $\mathcal{D}^a_n \leftrightarrow \mathcal{D}^b_n$.
+The numerators of the internal amplitudes follow from the Wronskian~\eqref{eq:wronskian}.
+The coefficients $a_n$ and $b_n$ do not change under $m \to -m$, so the branch of $m$ does not matter for them.
+Division of Eq.~\eqref{eq:ab} by $\psi_n(mx)$ gives the equivalent form with $D_n = D_n(mx)$,
+\begin{equation}
+    a_n = \frac{\sqrt{\eb}\,\psi_n'(x) - \sqrt{\mb}\, D_n\, \psi_n(x)}{\sqrt{\eb}\,\xi_n'(x) - \sqrt{\mb}\, D_n\, \xi_n(x)}, \qquad
+    b_n = \frac{\sqrt{\mb}\,\psi_n'(x) - \sqrt{\eb}\, D_n\, \psi_n(x)}{\sqrt{\mb}\,\xi_n'(x) - \sqrt{\eb}\, D_n\, \xi_n(x)} .
+    \label{eq:ab_D}
+\end{equation}
+
+\paragraph{Unitarity.}
+The elements of the $S$ matrix are $s^{e,m}_n = 1 + 2T^{e,m}_n$.
+A lossless sphere has $|s^{e,m}_n| = 1$, and a lossy sphere has $|s^{e,m}_n| < 1$.
+
+\paragraph{Helicity and duality.}
+In the helicity amplitudes~\eqref{eq:helicity_amplitudes} the $T$ matrix~\eqref{eq:Tmatrix} reads
+\begin{equation}
+    C^{\sigma,\rm sc}_{mj} = \frac{1}{2}\left[(T^e_j + T^m_j)\, C^{\sigma}_{mj} + (T^e_j - T^m_j)\, C^{-\sigma}_{mj}\right].
+    \label{eq:T_helicity}
+\end{equation}
+A dual sphere, $\eb = \mb$, has $T^e_j = T^m_j$ and keeps the helicity of every multipole.
+
+\paragraph{Resonances.}
+The zeros of $\mathcal{D}^a_n$ in the complex plane of $\tilde{x} = \tilde{k} a$ are the poles of $T^e_n$, i.e. the electric (TM) modes of the sphere.
+The zeros of $\mathcal{D}^b_n$ are the poles of $T^m_n$, the magnetic (TE) modes.
+For $\eb = 16$, $\mb = 1$ the magnetic dipole is at $\tilde{x} = 0.753782 - 0.024030\iu$ and the electric dipole at $\tilde{x} = 1.052735 - 0.072355\iu$.
+With $\eu^{-\iu\omega t}$ the poles have $\Im\tilde{x} < 0$, and the quality factor is $Q = \Re\tilde{x}/(2|\Im\tilde{x}|)$.
+
+\paragraph{Limits.}
+For $x \ll 1$ and $\mb = 1$, the series of $a_1 = -T^e_1$ in Ref.~\cite{Thesis} gives
+\begin{equation}
+    T^e_1 \simeq \frac{2\iu}{3}\frac{\eb - 1}{\eb + 2}x^3 + \iu\frac{4 + \eb(\eb\mb + \eb - 6)}{5(2+\eb)^2}x^5 - \frac{4}{9}\left(\frac{\eb - 1}{\eb + 2}\right)^2 x^6,
+    \label{eq:a1_small}
+\end{equation}
+and $T^m_1$ is the same with $\eb \leftrightarrow \mb$.
+The dipole polarizabilities are $\alpha_e = -\iu(6\pi/k^3)\, T^e_1$ and $\alpha_m = -\iu(6\pi/k^3)\, T^m_1$, with the static limit $\alpha_e \to 4\pi a^3 (\eb - 1)/(\eb + 2)$.
+A perfect electric conductor is the limit $|\eb| \to \infty$ with $\Im\sqrt{\eb} \to \infty$ at fixed $\mb$.
+Then $D_n(mx) \to -\iu$, and Eq.~\eqref{eq:ab_D} gives
+\begin{equation}
+    T^e_n = -\frac{\psi_n'(x)}{\xi_n'(x)}, \qquad
+    T^m_n = -\frac{\psi_n(x)}{\xi_n(x)},
+    \label{eq:pec}
+\end{equation}
+with corrections of order $|\eb|^{-1/2}$.
+
+% =====================================================================
+\section{Far field and cross sections}
+\label{sec:crosssections}
+
+\paragraph{Far field.}
+With Eq.~\eqref{eq:hankel_far} the scattered field becomes a transverse spherical wave,
+\begin{equation}
+    \vb{e}^{\rm sc} \simeq \frac{\eu^{\iu kr}}{kr}\, \vb{F}(\ort{r}), \qquad
+    \vb{F}(\ort{r}) = \sum_{mj}(-\iu)^j\left[A^{\rm sc}_{mj}\vb{\Psi}_{mj}(\ort{r}) + \iu B^{\rm sc}_{mj}\vb{\Phi}_{mj}(\ort{r})\right],
+    \label{eq:farfield}
+\end{equation}
+and the differential cross section of a plane wave $\vb{e}_0\eu^{\iu\vb{k}\cdot\vb{r}}$ is $\dd\sigma/\dd\Omega = |\vb{F}|^2/(k^2|\vb{e}_0|^2)$.
+
+\paragraph{Cross sections for any incident field.}
+The orthogonality~\eqref{eq:PsiPhi_orth} and the flux of the cross term give~\cite{Toftul2023PRL,Thesis}
+\begin{gather}
+    \sigma^{\rm sc} = \frac{1}{k^2|\vb{e}_0|^2}\sum_{mj}\jj\left(|A^{\rm sc}_{mj}|^2 + |B^{\rm sc}_{mj}|^2\right), \qquad
+    \sigma^{\rm ext} = -\frac{1}{k^2|\vb{e}_0|^2}\sum_{mj}\jj\, \Re\left(A^*_{mj}A^{\rm sc}_{mj} + B^*_{mj}B^{\rm sc}_{mj}\right),
+    \label{eq:sigma_AB}
+    \\
+    \sigma^{\rm ext} = \frac{4\pi}{k^2|\vb{e}_0|^2}\, \Im\left[\vb{e}_0^*\cdot\vb{F}(\ort{k})\right], \qquad
+    \sigma^{\rm abs} = \sigma^{\rm ext} - \sigma^{\rm sc} .
+    \label{eq:optical_theorem}
+\end{gather}
+The second line is the optical theorem.
+For an incident beam that is not a plane wave, Eq.~\eqref{eq:sigma_AB} keeps its form if we replace $|\vb{e}_0|^2$ by the chosen normalization of the incident intensity.
+For a sphere, $A^{\rm sc}_{mj} = T^e_j A_{mj}$ and $B^{\rm sc}_{mj} = T^m_j B_{mj}$ in Eq.~\eqref{eq:sigma_AB}.
+
+\paragraph{Sphere in a plane wave.}
+With Eqs.~\eqref{eq:Tmatrix} and \eqref{eq:pw_AB}, Eq.~\eqref{eq:sigma_AB} does not depend on the direction or the polarization of the wave:
+\begin{gather}
+    \sigma^{\rm sc} = \frac{2\pi}{k^2}\sum_{n=1}^\infty(2n+1)\left(|T^e_n|^2 + |T^m_n|^2\right), \qquad
+    \sigma^{\rm ext} = -\frac{2\pi}{k^2}\sum_{n=1}^\infty(2n+1)\, \Re(T^e_n + T^m_n),
+    \label{eq:sigma_sphere}
+    \\
+    \sigma^{\rm abs} = \frac{\pi}{2k^2}\sum_{n=1}^\infty(2n+1)\left(2 - |s^e_n|^2 - |s^m_n|^2\right).
+    \label{eq:sigma_abs_s}
+\end{gather}
+The $n$-th electric (magnetic) contribution is the term with $T^e_n$ ($T^m_n$).
+For example, the electric part of the absorption is $\sigma^{\rm abs}_{e,n} = -(2\pi/k^2)(2n+1)[\Re T^e_n + |T^e_n|^2]$.
+For $n = 1$, Eq.~\eqref{eq:sigma_sphere} gives $\sigma^{\rm ext}_e = k\Im\alpha_e$ and $\sigma^{\rm sc}_e = (k^4/6\pi)|\alpha_e|^2$, as in Ref.~\cite{Thesis}.
+
+\paragraph{Amplitude functions.}
+For $\vb{e}_0 = \ort{x}$ and $\ort{k} = \ort{z}$, the far field~\eqref{eq:farfield} is
+\begin{equation}
+    F_\vartheta = \iu\cos\varphi\; S_2(\vartheta), \qquad
+    F_\varphi = -\iu\sin\varphi\; S_1(\vartheta),
+    \label{eq:F_S}
+\end{equation}
+with the amplitude functions
+\begin{equation}
+    S_1 = -\sum_{n=1}^\infty\frac{2n+1}{n(n+1)}\left(T^e_n\pi_n + T^m_n\tau_n\right), \qquad
+    S_2 = -\sum_{n=1}^\infty\frac{2n+1}{n(n+1)}\left(T^e_n\tau_n + T^m_n\pi_n\right).
+    \label{eq:S12}
+\end{equation}
+Equation~\eqref{eq:F_S} is $\vb{E}^{\rm sc}_\parallel = \eu^{\iu kr}S_2 E_\parallel/(-\iu kr)$ and $\vb{E}^{\rm sc}_\perp = \eu^{\iu kr}S_1 E_\perp/(-\iu kr)$ of Ref.~\cite{Bohren1984}.
+The derived quantities are
+\begin{gather}
+    \frac{\dd\sigma}{\dd\Omega} = \frac{|S_2|^2\cos^2\varphi + |S_1|^2\sin^2\varphi}{k^2}, \qquad
+    \sigma^{\rm sc} = \frac{\pi}{k^2}\int_{-1}^{1}\dd\mu\left(|S_1|^2 + |S_2|^2\right), \qquad
+    \sigma^{\rm ext} = \frac{4\pi}{k^2}\Re S(0),
+    \label{eq:S_derived}
+    \\
+    S(0) = S_1(0) = S_2(0) = -\frac{1}{2}\sum_{n}(2n+1)(T^e_n + T^m_n), \qquad
+    \sigma^{\rm back} = \frac{4\pi}{k^2}|S_1(\pi)|^2 = \frac{\pi}{k^2}\left|\sum_n(2n+1)(-1)^n(T^e_n - T^m_n)\right|^2 .
+    \label{eq:sigma_back}
+\end{gather}
+The asymmetry parameter $g = \langle\cos\vartheta\rangle$ and the radiation-pressure cross section are
+\begin{gather}
+    g\,\sigma^{\rm sc} = \frac{4\pi}{k^2}\left[\sum_n\frac{n(n+2)}{n+1}\Re\left(T^e_n T^{e*}_{n+1} + T^m_n T^{m*}_{n+1}\right) + \sum_n\frac{2n+1}{n(n+1)}\Re\left(T^e_n T^{m*}_n\right)\right],
+    \label{eq:g}
+    \\
+    \sigma^{\rm pr} = \sigma^{\rm ext} - g\,\sigma^{\rm sc} .
+    \label{eq:sigma_pr}
+\end{gather}
+Equations~\eqref{eq:S12}--\eqref{eq:g} are the formulas of Ref.~\cite[Ch.~4]{Bohren1984} with $a_n = -T^e_n$ and $b_n = -T^m_n$.
+The normalization $\sigma/(\pi a^2)$ gives the efficiencies $Q$ of Ref.~\cite{Bohren1984}.
+
+% =====================================================================
+\section{Real harmonics of Bohren and Huffman}
+\label{sec:bh}
+
+This section maps the real basis of Ref.~\cite{Bohren1984} to the complex form above.
+
+\paragraph{Harmonics.}
+For $m \geq 0$ the generating functions are
+\begin{equation}
+    \psi_{emn} = \cos(m\varphi)\,\mathcal{P}_n^m(\cos\vartheta)\,z_n(kr), \qquad
+    \psi_{omn} = \sin(m\varphi)\,\mathcal{P}_n^m(\cos\vartheta)\,z_n(kr),
+    \label{eq:bh_psi}
+\end{equation}
+and we define $\vb{M}_{^e_o mn} = \curl(\vb{r}\psi_{^e_o mn})$ and $\vb{N}_{^e_o mn} = k^{-1}\curl\vb{M}_{^e_o mn}$.
+In components, with Eq.~\eqref{eq:pitau},
+\begin{align}
+    \vb{M}_{emn} &= -\ort{\vartheta}\sin(m\varphi)\,\pi^m_n z_n - \ort{\varphi}\cos(m\varphi)\,\tau^m_n z_n, \nonumber \\
+    \vb{M}_{omn} &= \ort{\vartheta}\cos(m\varphi)\,\pi^m_n z_n - \ort{\varphi}\sin(m\varphi)\,\tau^m_n z_n, \nonumber \\
+    \vb{N}_{emn} &= \ort{r}\, n(n+1)\frac{z_n}{\rho}\cos(m\varphi)\mathcal{P}^m_n + \left[\ort{\vartheta}\cos(m\varphi)\tau^m_n - \ort{\varphi}\sin(m\varphi)\pi^m_n\right]\zeta_n, \label{eq:bh_vsh} \\
+    \vb{N}_{omn} &= \ort{r}\, n(n+1)\frac{z_n}{\rho}\sin(m\varphi)\mathcal{P}^m_n + \left[\ort{\vartheta}\sin(m\varphi)\tau^m_n + \ort{\varphi}\cos(m\varphi)\pi^m_n\right]\zeta_n . \nonumber
+\end{align}
+The sign of $\mathcal{P}_n^m$ matters.
+With the Condon--Shortley $P_n^m$ instead of Eq.~\eqref{eq:P_BH}, every harmonic with odd $m$ changes sign, and the plane-wave series~\eqref{eq:bh_pw} gives $-\vb{e}$.
+
+\paragraph{Map to the complex harmonics.}
+For $m \geq 0$ and $\vb{W} = \vb{M}, \vb{N}$, with any $z_n$,
+\begin{gather}
+    \vb{W}_{mj} = (-1)^m\kappa_{mj}\left(\vb{W}_{emj} + \iu\vb{W}_{omj}\right), \qquad
+    \vb{W}_{-m,j} = \kappa_{mj}\left(\vb{W}_{emj} - \iu\vb{W}_{omj}\right),
+    \label{eq:real_to_complex}
+    \\
+    \vb{W}_{emj} = \frac{(-1)^m\vb{W}_{mj} + \vb{W}_{-m,j}}{2\kappa_{mj}}, \qquad
+    \vb{W}_{omj} = \frac{(-1)^m\vb{W}_{mj} - \vb{W}_{-m,j}}{2\iu\kappa_{mj}}, \qquad
+    \vb{W}_{e0j} = \frac{\vb{W}_{0j}}{\kappa_{0j}}, \quad \vb{W}_{o0j} = 0 .
+    \label{eq:complex_to_real}
+\end{gather}
+Equation~(25) of the Supplemental Material of Ref.~\cite{Toftul2023PRL} has no factor $(-1)^m$, because there the real harmonics are built on $P_n^m$ with the Condon--Shortley phase.
+With the book functions $\mathcal{P}_n^m$ of Eq.~\eqref{eq:P_BH}, the map is Eq.~\eqref{eq:real_to_complex}, where $\kappa_{mj}$ is $\beta_{mj}$ of Ref.~\cite{Toftul2023PRL}.
+
+\paragraph{Fields of an $x$-polarized wave.}
+For $\vb{e}_0 = \ort{x}$, $\ort{k} = \ort{z}$, and $E_n = \iu^n(2n+1)/[n(n+1)]$, Ref.~\cite[Ch.~4]{Bohren1984} gives, in our normalization,
+\begin{align}
+    \vb{e}^{\rm inc} &= \sum_n E_n\left(\vb{M}^{(1)}_{o1n} - \iu\vb{N}^{(1)}_{e1n}\right), &
+    \vb{h}^{\rm inc} &= -\sum_n E_n\left(\vb{M}^{(1)}_{e1n} + \iu\vb{N}^{(1)}_{o1n}\right), \label{eq:bh_pw} \\
+    \vb{e}^{\rm sc} &= -\sum_n E_n\left(\iu T^e_n\vb{N}^{(3)}_{e1n} - T^m_n\vb{M}^{(3)}_{o1n}\right), &
+    \vb{h}^{\rm sc} &= -\sum_n E_n\left(\iu T^m_n\vb{N}^{(3)}_{o1n} + T^e_n\vb{M}^{(3)}_{e1n}\right), \label{eq:bh_sc} \\
+    \frac{\sqrt{\varepsilon_p}\vb{E}}{\mathcal{A}} &= \sqrt{\eb}\sum_n E_n\left(c_n\vb{M}^{(1)}_{o1n} - \iu d_n\vb{N}^{(1)}_{e1n}\right), &
+    \frac{\sqrt{\mu_p}\vb{H}}{\mathcal{A}} &= -\sqrt{\eb}\sum_n E_n\left(d_n\vb{M}^{(1)}_{e1n} + \iu c_n\vb{N}^{(1)}_{o1n}\right), \label{eq:bh_in}
+\end{align}
+where the superscript is $s$ of Eq.~\eqref{eq:zj}, the internal harmonics have $\rho = k_p r$, and $\mathcal{A} = \sqrt{\varepsilon}E_0$.
+The internal coefficients of Ref.~\cite{Bohren1984} are
+\begin{equation}
+    c_n = \frac{\iu\mb\sqrt{\eb}}{\mathcal{D}^b_n}, \qquad
+    d_n = \frac{\iu\mb\sqrt{\eb}}{\mathcal{D}^a_n}, \qquad
+    \sqrt{\eb}\, c_n = \frac{\iu m^2}{\mathcal{D}^b_n}, \qquad
+    \sqrt{\eb}\, d_n = \frac{\iu m^2}{\mathcal{D}^a_n},
+    \label{eq:cd}
+\end{equation}
+so that Eq.~\eqref{eq:bh_in} matches Eq.~\eqref{eq:Tmatrix}.
+
+% =====================================================================
+\section{Acoustic Mie problem}
+\label{sec:acoustics}
+
+\paragraph{Fields.}
+An incident plane wave along $z$ and the scattered and internal pressures are~\cite{Toftul2019PRL,Thesis}
+\begin{equation}
+    p^{\rm inc} = \sum_{n=0}^\infty p_n j_n(kr)P_n(\cos\vartheta), \qquad
+    p^{\rm sc} = \sum_{n=0}^\infty p_n a_n h_n(kr)P_n(\cos\vartheta), \qquad
+    p^{\rm in} = \sum_{n=0}^\infty p_n c_n j_n(k_p r)P_n(\cos\vartheta),
+    \label{eq:acoustic_fields}
+\end{equation}
+with $p_n = p_0\iu^n(2n+1)$.
+The pressure and $\rho^{-1}\partial_r p$ are continuous at $r = a$.
+They give~\cite{Toftul2019PRL,Thesis}
+\begin{gather}
+    a_n = \frac{\sqrt{\bb}\, j_n'(k_pa)\, j_n(ka) - \sqrt{\rb}\, j_n(k_pa)\, j_n'(ka)}{\mathcal{D}_n}, \qquad
+    c_n = \frac{\iu\sqrt{\rb}}{(ka)^2\, \mathcal{D}_n},
+    \nonumber \\
+    \mathcal{D}_n = \sqrt{\rb}\, j_n(k_pa)\, h_n'(ka) - \sqrt{\bb}\, j_n'(k_pa)\, h_n(ka).
+    \label{eq:acoustic_coefficients}
+\end{gather}
+With the definition of $T$ in Sec.~\ref{sec:mie_em}, the published acoustic coefficient already has the sign of $T$: $T_n = +a_n$.
+For any incidence, $p^{\rm inc} = p_0\sum_{mj}C_{mj}j_j(kr)Y_{mj}$ with $C_{mj}$ from Sec.~\ref{sec:decomposition}, the scattered amplitudes are $C^{\rm sc}_{mj} = T_j C_{mj}$.
+As in optics, $s_n = 1 + 2T_n$ has $|s_n| = 1$ for a lossless sphere and $|s_n| < 1$ with loss.
+
+\paragraph{Limits.}
+The relative impedance is $\bar{Z} = \sqrt{\rb/\bb} = \rho_pc_p/(\rho c)$.
+At fixed $k_pa$,
+\begin{equation}
+    \bar{Z} \to \infty\ \text{(rigid)}: \quad T_n = -\frac{j_n'(ka)}{h_n'(ka)}, \qquad
+    \bar{Z} \to 0\ \text{(sound soft)}: \quad T_n = -\frac{j_n(ka)}{h_n(ka)} .
+    \label{eq:acoustic_limits}
+\end{equation}
+With one sign of $T$, the rigid sphere has the structure of $T^e_n$ of a perfect conductor~\eqref{eq:pec}, and the soft sphere that of $T^m_n$.
+For $ka \ll 1$~\cite{Thesis},
+\begin{align}
+    T_0 = a_0 &\simeq \frac{\iu}{3}(\bb - 1)(ka)^3 + \frac{\iu}{45}\left[\bb^2(\rb + 5) - 15\bb + 9\right](ka)^5 - \frac{1}{9}(\bb - 1)^2(ka)^6, \nonumber \\
+    T_1 = a_1 &\simeq \frac{\iu}{3}\frac{\rb - 1}{2\rb + 1}(ka)^3 + \frac{\iu}{5}\frac{\rb^2(\bb - 1) - \rb + 1}{(2\rb + 1)^2}(ka)^5 - \frac{1}{9}\left(\frac{\rb - 1}{2\rb + 1}\right)^2(ka)^6 .
+    \label{eq:acoustic_small}
+\end{align}
+
+\paragraph{Far field and cross sections.}
+The scattered pressure becomes $p^{\rm sc} \simeq p_0 f(\vartheta)\eu^{\iu kr}/r$ with
+\begin{equation}
+    f(\vartheta) = -\frac{\iu}{k}\sum_n(2n+1)\, T_n P_n(\cos\vartheta), \qquad
+    f(\ort{r}) = \frac{1}{k}\sum_{mj}(-\iu)^{j+1}C^{\rm sc}_{mj}Y_{mj}(\ort{r})\ \text{(any incidence)}.
+    \label{eq:acoustic_farfield}
+\end{equation}
+The cross sections are
+\begin{gather}
+    \sigma^{\rm sc} = \int\dd\Omega\, |f|^2 = \frac{4\pi}{k^2}\sum_n(2n+1)|T_n|^2, \qquad
+    \sigma^{\rm ext} = \frac{4\pi}{k}\Im f(0) = -\frac{4\pi}{k^2}\sum_n(2n+1)\Re T_n,
+    \nonumber \\
+    \sigma^{\rm abs} = \sigma^{\rm ext} - \sigma^{\rm sc} = \frac{\pi}{k^2}\sum_n(2n+1)\left(1 - |s_n|^2\right),
+    \label{eq:acoustic_sigma}
+    \\
+    \sigma^{\rm pr} = \sigma^{\rm ext} - \int\dd\Omega\, \cos\vartheta\, |f|^2 = -\frac{4\pi}{k^2}\sum_n\left[(2n+1)\Re T_n + 2(n+1)\Re\left(T_n T^*_{n+1}\right)\right].
+    \label{eq:acoustic_pr}
+\end{gather}
+The radiation force of the plane wave is $F_z = \beta|p_0|^2\sigma^{\rm pr}/2$~\cite{Hasegawa1977JASA,Thesis}.
+For any incidence, $\sigma^{\rm sc} = k^{-2}\sum_{mj}|C^{\rm sc}_{mj}|^2$ and $\sigma^{\rm ext} = -k^{-2}\sum_{mj}\Re(C^*_{mj}C^{\rm sc}_{mj})$, with $|p_0| = 1$.
+For $ka \ll 1$, Eq.~\eqref{eq:acoustic_small} gives $\sigma^{\rm sc} \simeq 4\pi k^4a^6\left(|f_1|^2/9 + |f_2|^2/12\right)$ with $f_1 = 1 - \bb$ and $f_2 = 2(\rb - 1)/(2\rb + 1)$.
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}
