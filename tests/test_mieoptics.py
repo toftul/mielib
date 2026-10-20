@@ -139,3 +139,36 @@ def test_internal_coefficients_share_the_denominators():
 
     np.testing.assert_allclose(mielib.optics_mie_c(n, **params), mielib.optics_mie_b(n, **params))
     np.testing.assert_allclose(mielib.optics_mie_d(n, **params), mielib.optics_mie_a(n, **params))
+
+
+@pytest.mark.parametrize("eps_p, mu_p, eps_h, mu_h, lossless", [
+    (6.0, 1, 1, 1, True),
+    (4.0, 2.0, 1.5, 1.2, True),
+    (6 + 0.4j, 1, 1, 1, False),
+    (4.0, 2 + 0.3j, 1.5, 1.2, False),
+])
+def test_tmatrix_conserves_the_flux(eps_p, mu_p, eps_h, mu_h, lossless):
+    """j_n = (h_n^(1) + h_n^(2)) / 2, so the outgoing wave has the amplitude 1 + 2T: |1 + 2T| = 1 without loss and < 1 with loss."""
+    n = np.arange(1, 5)
+
+    for t in mielib.optics_tmatrix(n, 1.3, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h):
+        if lossless:
+            np.testing.assert_allclose(np.abs(1 + 2 * t), 1, rtol=1e-12)
+        else:
+            assert np.all(np.abs(1 + 2 * t) < 1)
+
+
+def test_cross_sections_from_the_tmatrix():
+    """sigma_ext = -(2 pi / k^2) sum (2n+1) Re(T^e + T^m), with the same sign as in acoustics."""
+    k0, eps_p, mu_p, eps_h, mu_h = 1.3, 6 + 0.4j, 1.2, 1.5, 1.1
+    k = np.sqrt(eps_h * mu_h) * k0
+    # the same terms as in the cross-section functions
+    n = np.arange(1, mielib.wiscombe_nstop(k) + 1)
+    te, tm = mielib.optics_tmatrix(n, k0, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+
+    sigma_ext = -2 * np.pi / k**2 * np.sum((2 * n + 1) * np.real(te + tm))
+    sigma_sc = 2 * np.pi / k**2 * np.sum((2 * n + 1) * (np.abs(te)**2 + np.abs(tm)**2))
+
+    params = dict(eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+    np.testing.assert_allclose(sigma_ext, mielib.optics_extinction_cross_section(k0, 1.0, **params)[0], rtol=1e-12)
+    np.testing.assert_allclose(sigma_sc, mielib.optics_scattering_cross_section(k0, 1.0, **params)[0], rtol=1e-12)

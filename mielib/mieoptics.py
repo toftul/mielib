@@ -125,6 +125,30 @@ def optics_mie_d(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
         return mu * m * 1j / x / (m**2 * jnmx * xh1nx_p - mu * h1nx * mxjnmx_p)
 
 
+def optics_tmatrix(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1):
+    """
+        Diagonal T-matrix of a sphere: the outgoing amplitude divided by the regular amplitude of the same multipole.
+        In the expansion
+            sqrt(eps) E = 𝒜 sum_mj (A_mj N_mj + B_mj M_mj),   sqrt(mu) H = -i 𝒜 sum_mj (B_mj N_mj + A_mj M_mj),
+        the scattered amplitudes (radial function h_j) are A^sc_mj = T^e_j A^inc_mj and B^sc_mj = T^m_j B^inc_mj,
+        where the incident amplitudes have the radial function j_j. T does not depend on m.
+        With the sign of Bohren & Huffman for a_n and b_n, T^e_n = -a_n and T^m_n = -b_n.
+        The acoustic T_n has the same sign convention, see acoustics_tmatrix.
+        For a lossless sphere |1 + 2 T| = 1.
+
+        Arguments:
+            n - 2^n multipole order
+            k0a - vacuum size parameter
+            eps_p, mu_p - particle parameters
+            eps_h, mu_h - host parameters
+
+        Returns:
+            T^e_n, T^m_n - electric and magnetic elements
+    """
+    params = dict(eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
+    return -optics_mie_a(n, k0a, **params), -optics_mie_b(n, k0a, **params)
+
+
 def _host_refractive_index(eps_h, mu_h):
     """
         Refractive index of the host for the cross sections.

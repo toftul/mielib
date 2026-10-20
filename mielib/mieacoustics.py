@@ -56,6 +56,24 @@ def acoustics_mie_c(n, ka, rho1, beta1, get_denominator=False):
         return down
     else:
         return up/down
+
+
+def acoustics_tmatrix(n, ka, rho_rel, beta_rel):
+    """
+        Diagonal T-matrix of a sphere: the outgoing amplitude divided by the regular amplitude of the same multipole.
+        In the expansion p = 𝒜 sum_jm C_jm z_j(k r) Y_jm(θ, φ),
+        the scattered amplitudes (z_j = h_j) are C^sc_jm = T_j C^inc_jm, where the incident amplitudes have z_j = j_j.
+        T does not depend on m.
+        With the sign of acoustics_mie_a, T_n = a_n.
+        The optical T_n has the same sign convention, but there T_n = -a_n, see optics_tmatrix.
+        For a lossless sphere |1 + 2 T| = 1.
+
+        n - multipole order
+        ka - size parameter in host media
+        rho_rel - relative density
+        beta_rel - relative compressibility
+    """
+    return acoustics_mie_a(n, ka, rho_rel, beta_rel)
     
     
 def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None, norm='none'):

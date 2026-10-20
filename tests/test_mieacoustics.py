@@ -95,3 +95,33 @@ def test_internal_coefficient_shares_the_denominator():
     params = dict(ka=1.7, rho1=2.0 + 0.1j, beta1=0.5, get_denominator=True)
 
     np.testing.assert_allclose(mielib.acoustics_mie_c(n, **params), mielib.acoustics_mie_a(n, **params))
+
+
+@pytest.mark.parametrize("rho_rel, beta_rel, lossless", [
+    (2.5, 0.4, True),
+    (0.3, 3.0, True),
+    (2.0 + 0.1j, 0.5, False),
+    (0.3, 3.0 + 0.2j, False),
+])
+def test_tmatrix_conserves_the_flux(rho_rel, beta_rel, lossless):
+    """j_n = (h_n^(1) + h_n^(2)) / 2, so the outgoing wave has the amplitude 1 + 2T: |1 + 2T| = 1 without loss and < 1 with loss."""
+    t = mielib.acoustics_tmatrix(np.arange(0, 5), 1.3, rho_rel, beta_rel)
+
+    if lossless:
+        np.testing.assert_allclose(np.abs(1 + 2 * t), 1, rtol=1e-12)
+    else:
+        assert np.all(np.abs(1 + 2 * t) < 1)
+
+
+def test_cross_sections_from_the_tmatrix():
+    """sigma_ext = -(4 pi / k^2) sum (2n+1) Re T, with the same sign as in optics."""
+    k, rho_rel, beta_rel = 1.3, 2.0 + 0.1j, 0.5
+    # the same terms as in the cross-section functions
+    n = np.arange(0, mielib.wiscombe_nstop(k) + 1)
+    t = mielib.acoustics_tmatrix(n, k, rho_rel, beta_rel)
+
+    sigma_ext = -4 * np.pi / k**2 * np.sum((2 * n + 1) * np.real(t))
+    sigma_sc = 4 * np.pi / k**2 * np.sum((2 * n + 1) * np.abs(t)**2)
+
+    np.testing.assert_allclose(sigma_ext, mielib.acoustics_extinction_cross_section(k, 1.0, rho_rel, beta_rel)[0], rtol=1e-12)
+    np.testing.assert_allclose(sigma_sc, mielib.acoustics_scattering_cross_section(k, 1.0, rho_rel, beta_rel)[0], rtol=1e-12)
