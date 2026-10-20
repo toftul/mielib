@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.special as sp
-from mielib import extraspecial
+from mielib import special
 
 __all__ = [
     "acoustics_mie_a",
@@ -30,8 +30,8 @@ def acoustics_mie_a(n, ka, rho1, beta1, get_denominator=False):
     jn = sp.spherical_jn(n, ka)
     jn1p = sp.spherical_jn(n, k1a, 1)
     jnp = sp.spherical_jn(n, ka, 1)
-    hn = extraspecial.spherical_h1(n, ka)
-    hnp = extraspecial.spherical_h1(n, ka, p=1)
+    hn = special.spherical_h1(n, ka)
+    hnp = special.spherical_h1(n, ka, derivative=1)
     up = (gamma * jn1p * jn - jn1 * jnp)
     down = (jn1 * hnp - gamma * jn1p * hn)
     
@@ -56,8 +56,8 @@ def acoustics_mie_c(n, ka, rho1, beta1, get_denominator=False):
     k1a = ka * np.sqrt(beta1*rho1)
     jn1 = sp.spherical_jn(n, k1a)
     jn1p = sp.spherical_jn(n, k1a, 1)
-    hn = extraspecial.spherical_h1(n, ka)
-    hnp = extraspecial.spherical_h1(n, ka, p=1)
+    hn = special.spherical_h1(n, ka)
+    hnp = special.spherical_h1(n, ka, derivative=1)
     # the Wronskian j_n h_n' - j_n' h_n = i/(ka)^2
     up = 1j / (ka**2)
     down = (jn1 * hnp - gamma * jn1p * hn)
@@ -88,7 +88,7 @@ def acoustics_tmatrix(n, ka, rho_rel, beta_rel):
     
 def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None, norm='none'):
     ka = np.asarray(a * k)
-    nstop = extraspecial.wiscombe_nstop(ka)
+    nstop = special.wiscombe_jmax(ka)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
     
@@ -114,7 +114,7 @@ def acoustics_scattering_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=Non
 
 def acoustics_pressure_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None, norm='none'):
     ka = np.asarray(a * k)
-    nstop = extraspecial.wiscombe_nstop(ka)
+    nstop = special.wiscombe_jmax(ka)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
     
@@ -145,7 +145,7 @@ def acoustics_pressure_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None,
 
 def acoustics_extinction_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None, norm='none'):
     ka = np.asarray(a * k)
-    nstop = extraspecial.wiscombe_nstop(ka)
+    nstop = special.wiscombe_jmax(ka)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
     
@@ -171,7 +171,7 @@ def acoustics_extinction_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=Non
 
 def acoustics_absorption_cross_section(k, a, rho_rel, beta_rel, nmin=0, nmax=None, norm='none'):
     ka = np.asarray(a * k)
-    nstop = extraspecial.wiscombe_nstop(ka)
+    nstop = special.wiscombe_jmax(ka)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
     

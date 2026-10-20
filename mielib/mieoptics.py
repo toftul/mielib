@@ -1,6 +1,6 @@
 import scipy.special as sp
 import numpy as np
-from mielib import extraspecial
+from mielib import special
 
 __all__ = [
     "optics_mie_a",
@@ -32,10 +32,10 @@ def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
     jnx = sp.spherical_jn(n, x)
-    h1nx = extraspecial.spherical_h1(n, x)
+    h1nx = special.spherical_h1(n, x)
     xjnx_p = jnx + x * sp.spherical_jn(n, x, 1)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+    xh1nx_p = h1nx + x * special.spherical_h1(n, x, derivative=1)
 
     if get_denominator:
         # for dispersion of TM modes
@@ -62,10 +62,10 @@ def optics_mie_b(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
     jnx = sp.spherical_jn(n, x)
-    h1nx = extraspecial.spherical_h1(n, x)
+    h1nx = special.spherical_h1(n, x)
     xjnx_p = jnx + x * sp.spherical_jn(n, x, 1)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+    xh1nx_p = h1nx + x * special.spherical_h1(n, x, derivative=1)
     
     if get_denominator:
         # for dispertion of TE modes
@@ -93,9 +93,9 @@ def optics_mie_c(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
 
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
-    h1nx = extraspecial.spherical_h1(n, x)
+    h1nx = special.spherical_h1(n, x)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+    xh1nx_p = h1nx + x * special.spherical_h1(n, x, derivative=1)
 
     if get_denominator:
         # same as for b_n
@@ -124,9 +124,9 @@ def optics_mie_d(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
 
     mx = m * x
     jnmx = sp.spherical_jn(n, mx)
-    h1nx = extraspecial.spherical_h1(n, x)
+    h1nx = special.spherical_h1(n, x)
     mxjnmx_p = jnmx + mx * sp.spherical_jn(n, mx, 1)
-    xh1nx_p = h1nx + x * extraspecial.spherical_h1(n, x, p=1)
+    xh1nx_p = h1nx + x * special.spherical_h1(n, x, derivative=1)
 
     if get_denominator:
         # same as for a_n
@@ -178,7 +178,7 @@ def optics_scattering_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     k0a = np.asarray(k0 * a)
 
     n_host = _host_refractive_index(eps_h, mu_h)
-    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    nstop = special.wiscombe_jmax(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
 
@@ -210,7 +210,7 @@ def optics_extinction_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     k0a = np.asarray(k0 * a)
 
     n_host = _host_refractive_index(eps_h, mu_h)
-    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    nstop = special.wiscombe_jmax(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
 
@@ -241,7 +241,7 @@ def optics_absorption_cross_section(k0, a, eps_p, mu_p=1, eps_h=1, mu_h=1, nmin=
     k0a = np.asarray(k0 * a)
 
     n_host = _host_refractive_index(eps_h, mu_h)
-    nstop = extraspecial.wiscombe_nstop(n_host * k0a)
+    nstop = special.wiscombe_jmax(n_host * k0a)
     if nmax is None:
         nmax = int(np.max(nstop)) + 1
 

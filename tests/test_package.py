@@ -4,7 +4,7 @@ from pathlib import Path
 
 import mielib
 
-MODULES = [mielib.extraspecial, mielib.harmonics, mielib.mieacoustics, mielib.mieoptics, mielib.rotations]
+MODULES = [mielib.special, mielib.harmonics, mielib.mieacoustics, mielib.mieoptics, mielib.rotations]
 
 
 def test_all_lists_each_public_function_once():
@@ -14,7 +14,7 @@ def test_all_lists_each_public_function_once():
         assert sorted(module.__all__) == sorted(defined), module.__name__
 
     assert len(mielib.__all__) == len(set(mielib.__all__))
-    assert all(callable(getattr(mielib, name)) for name in mielib.__all__)
+    assert all(callable(getattr(mielib, name)) or inspect.ismodule(getattr(mielib, name)) for name in mielib.__all__)
 
 
 def test_namespace_has_no_helper_modules():

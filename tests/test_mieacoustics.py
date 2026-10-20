@@ -82,11 +82,11 @@ def test_coefficients_satisfy_boundary_conditions(ka, rho_rel, beta_rel):
 
     # p_in + p_sc = p_part
     np.testing.assert_allclose(
-        sp.spherical_jn(n, ka) + a * mielib.spherical_h1(n, ka),
+        sp.spherical_jn(n, ka) + a * mielib.special.spherical_h1(n, ka),
         c * sp.spherical_jn(n, k1a), rtol=1e-12)
     # (1/rho) dp/dr outside = (1/rho_1) dp/dr inside, and k_1 / (k rho_rel) = delta
     np.testing.assert_allclose(
-        sp.spherical_jn(n, ka, 1) + a * mielib.spherical_h1(n, ka, p=1),
+        sp.spherical_jn(n, ka, 1) + a * mielib.special.spherical_h1(n, ka, derivative=1),
         delta * c * sp.spherical_jn(n, k1a, 1), rtol=1e-12)
 
 
@@ -117,7 +117,7 @@ def test_cross_sections_from_the_tmatrix():
     """sigma_ext = -(4 pi / k^2) sum (2n+1) Re T, with the same sign as in optics."""
     k, rho_rel, beta_rel = 1.3, 2.0 + 0.1j, 0.5
     # the same terms as in the cross-section functions
-    n = np.arange(0, mielib.wiscombe_nstop(k) + 1)
+    n = np.arange(0, mielib.special.wiscombe_jmax(k) + 1)
     t = mielib.acoustics_tmatrix(n, k, rho_rel, beta_rel)
 
     sigma_ext = -4 * np.pi / k**2 * np.sum((2 * n + 1) * np.real(t))

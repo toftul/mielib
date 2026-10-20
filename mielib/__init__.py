@@ -1,13 +1,12 @@
 from importlib.metadata import PackageNotFoundError, version
 
-from . import extraspecial, harmonics, mieacoustics, mieoptics, rotations
-from .extraspecial import *
+from . import harmonics, mieacoustics, mieoptics, rotations, special
 from .mieacoustics import *
 from .mieoptics import *
 from .harmonics import *
 from .rotations import *
 
-__all__ = extraspecial.__all__ + mieacoustics.__all__ + mieoptics.__all__ + harmonics.__all__ + rotations.__all__
+__all__ = ["special"] + mieacoustics.__all__ + mieoptics.__all__ + harmonics.__all__ + rotations.__all__
 
 try:
     __version__ = version("mielib")

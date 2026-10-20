@@ -58,7 +58,7 @@ def test_toftul_vsh_differential_identities(m, j, superscript):
     J_M, J_N, J_L = jacobian(M, POINTS), jacobian(N, POINTS), jacobian(L, POINTS)
 
     r, theta, phi = mielib.cart2sph(*POINTS)
-    psi = mielib.spherical_radial_function_z(j, r, superscript=superscript) * sp.sph_harm_y(j, m, theta, phi)
+    psi = mielib.special.spherical_z(j, r, superscript=superscript) * sp.sph_harm_y(j, m, theta, phi)
 
     scale = max(np.max(np.abs(F(POINTS))) for F in (M, N, L))
     assert_zero_or_equal(div(J_M), 0, scale)
@@ -124,8 +124,8 @@ def test_toftul_vsh_are_orthogonal(superscript):
     M, N, L = harmonics(mielib.vsh_toftul_m), harmonics(mielib.vsh_toftul_n), harmonics(mielib.vsh_toftul_l)
 
     j = np.array([j for _, j in labels])
-    z = mielib.spherical_radial_function_z(j, rho, superscript=superscript)
-    zp = mielib.spherical_radial_function_z(j, rho, p=1, superscript=superscript)
+    z = mielib.special.spherical_z(j, rho, superscript=superscript)
+    zp = mielib.special.spherical_z(j, rho, superscript=superscript, derivative=1)
     d = (z + rho * zp) / rho  # (rho z)' / rho
     jj = j * (j + 1)
 

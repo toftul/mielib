@@ -130,11 +130,6 @@ def test_vsh_do_not_change_the_input_arrays(vsh):
     np.testing.assert_array_equal(theta, [0.0, 0.5])
 
 
-def test_unknown_superscript_raises():
-    with pytest.raises(ValueError, match="superscript"):
-        mielib.spherical_radial_function_z(1, 1.0, superscript=5)
-
-
 @pytest.mark.parametrize("vsh, options, message", [
     (mielib.vector_spherical_harmonic_m, dict(source='jackson'), "source"),
     (mielib.vector_spherical_harmonic_n, dict(source='jackson'), "source"),

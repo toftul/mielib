@@ -1,10 +1,9 @@
 import numpy as np
 import scipy.special as sp
 
-from mielib import extraspecial
+from mielib import special
 
 __all__ = [
-    "spherical_radial_function_z",
     "vsh_bohren_me",
     "vsh_bohren_mo",
     "vsh_bohren_ne",
@@ -18,28 +17,6 @@ __all__ = [
     "vector_spherical_harmonic_l",
 ]
 
-def spherical_radial_function_z(j, rho, p=0, superscript=1):
-    """
-        j - radial quantum number
-        rho - argument
-        p = 0,1 - derivative order
-        superscript - type of radial function
-    """
-    match superscript:
-        case 1:
-            zj = sp.spherical_jn(j, rho, p)
-        case 2:
-            zj = sp.spherical_yn(j, rho, p)
-        case 3:
-            zj = extraspecial.spherical_h1(j, rho, p)
-        case 4:
-            zj = extraspecial.spherical_h2(j, rho, p)
-        case _:
-            raise ValueError(f"superscript must be 1, 2, 3 or 4, not {superscript!r}")
-
-    return zj
-
-        
 def _bohren_legendre(m, n, theta):
     """
         P_n^m(cos θ), m P_n^m(cos θ) / sin θ and d_θ P_n^m(cos θ) as in Bohren & Huffman,
@@ -85,7 +62,7 @@ def vsh_bohren_me(m, n, rho, theta, phi, superscript):
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
 
-    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    zn = special.spherical_z(n, rho, superscript=superscript)
     _, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Mt = -np.sin(m * phi) * pinm
@@ -117,7 +94,7 @@ def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
 
-    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    zn = special.spherical_z(n, rho, superscript=superscript)
     _, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Mt = np.cos(m * phi) * pinm
@@ -149,8 +126,8 @@ def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
 
-    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
-    znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
+    zn = special.spherical_z(n, rho, superscript=superscript)
+    znp = special.spherical_z(n, rho, superscript=superscript, derivative=1)
     Pnm, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Nr = zn/rho * np.cos(m*phi) * n * (n+1) * Pnm
@@ -181,8 +158,8 @@ def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
 
-    zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
-    znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
+    zn = special.spherical_z(n, rho, superscript=superscript)
+    znp = special.spherical_z(n, rho, superscript=superscript, derivative=1)
     Pnm, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Nr = zn/rho * np.sin(m * phi) * n * (n+1) * Pnm
@@ -242,7 +219,7 @@ def vsh_toftul_m(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zj = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
+    zj = special.spherical_z(j, rho, superscript=superscript)
 
     Mt = 1j * m / np.sin(theta) * zj * sp.sph_harm_y(j, m, theta, phi)
 
@@ -279,8 +256,8 @@ def vsh_toftul_n(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
-    zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
+    zj  = special.spherical_z(j, rho, superscript=superscript)
+    zjp = special.spherical_z(j, rho, superscript=superscript, derivative=1)
 
     Ymn = sp.sph_harm_y(j, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn
@@ -316,8 +293,8 @@ def vsh_toftul_l(m, j, rho, theta, phi, superscript=3):
     rho[np.abs(rho) < 1e-15] = 1e-15
     theta[np.abs(theta) < 1e-15] = 1e-15
 
-    zj  = spherical_radial_function_z(j, rho, p=0, superscript=superscript)
-    zjp = spherical_radial_function_z(j, rho, p=1, superscript=superscript)
+    zj  = special.spherical_z(j, rho, superscript=superscript)
+    zjp = special.spherical_z(j, rho, superscript=superscript, derivative=1)
 
     Ymn = sp.sph_harm_y(j, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn

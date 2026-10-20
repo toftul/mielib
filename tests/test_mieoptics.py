@@ -118,10 +118,10 @@ def test_coefficients_satisfy_boundary_conditions(eps_p, mu_p, eps_h, mu_h, k0a)
     mu = mu_p / mu_h
 
     jx, jmx = sp.spherical_jn(n, x), sp.spherical_jn(n, m * x)
-    hx = mielib.spherical_h1(n, x)
+    hx = mielib.special.spherical_h1(n, x)
     xjx_p = jx + x * sp.spherical_jn(n, x, 1)
     mxjmx_p = jmx + m * x * sp.spherical_jn(n, m * x, 1)
-    xhx_p = hx + x * mielib.spherical_h1(n, x, p=1)
+    xhx_p = hx + x * mielib.special.spherical_h1(n, x, derivative=1)
 
     params = dict(eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
     a, b = mielib.optics_mie_a(n, k0a, **params), mielib.optics_mie_b(n, k0a, **params)
@@ -163,7 +163,7 @@ def test_cross_sections_from_the_tmatrix():
     k0, eps_p, mu_p, eps_h, mu_h = 1.3, 6 + 0.4j, 1.2, 1.5, 1.1
     k = np.sqrt(eps_h * mu_h) * k0
     # the same terms as in the cross-section functions
-    n = np.arange(1, mielib.wiscombe_nstop(k) + 1)
+    n = np.arange(1, mielib.special.wiscombe_jmax(k) + 1)
     te, tm = mielib.optics_tmatrix(n, k0, eps_p=eps_p, mu_p=mu_p, eps_h=eps_h, mu_h=mu_h)
 
     sigma_ext = -2 * np.pi / k**2 * np.sum((2 * n + 1) * np.real(te + tm))
