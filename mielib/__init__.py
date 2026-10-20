@@ -1,9 +1,8 @@
 from importlib.metadata import PackageNotFoundError, version
 
-from . import coordinates, mieacoustics, optics, special, vsh
-from .mieacoustics import *
+from . import acoustics, coordinates, optics, special, vsh
 
-__all__ = ["coordinates", "optics", "special", "vsh"] + mieacoustics.__all__
+__all__ = ["acoustics", "coordinates", "optics", "special", "vsh"]
 
 try:
     __version__ = version("mielib")
