@@ -4,12 +4,12 @@ from pathlib import Path
 
 import mielib
 
-MODULES = [mielib.special, mielib.vsh, mielib.mieacoustics, mielib.mieoptics, mielib.coordinates]
+MODULES = [mielib.special, mielib.vsh, mielib.mieacoustics, mielib.optics, mielib.coordinates]
 
 
-def test_all_lists_each_public_function_once():
+def test_all_lists_each_public_function_and_class_once():
     for module in MODULES:
-        defined = [name for name, f in inspect.getmembers(module, inspect.isfunction)
+        defined = [name for name, f in inspect.getmembers(module, lambda f: inspect.isfunction(f) or inspect.isclass(f))
                    if f.__module__ == module.__name__ and not name.startswith('_')]
         assert sorted(module.__all__) == sorted(defined), module.__name__
 
