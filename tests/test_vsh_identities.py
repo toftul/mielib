@@ -6,6 +6,7 @@ import pytest
 import scipy.special as sp
 
 import mielib
+from mielib import vsh
 
 # points off the z axis, one point in each column
 POINTS = np.array([
@@ -15,10 +16,10 @@ POINTS = np.array([
 ])
 
 
-def cart_field(vsh, m, j, X, superscript):
+def cart_field(harmonic, j, m, X, **options):
     """Cartesian components of a harmonic at the Cartesian points X."""
     r, theta, phi = mielib.cart2sph(*X)
-    A = vsh(m, j, r, theta, phi, superscript=superscript)
+    A = harmonic(j, m, r, theta, phi, **options)
     return np.einsum('ij...,j...->i...', mielib.rotation_matrix_3d_sph(theta, phi), A)
 
 
@@ -46,15 +47,15 @@ def curl(J):
 
 
 @pytest.mark.parametrize("superscript", [1, 3])
-@pytest.mark.parametrize("m, j", [(0, 1), (1, 1), (-1, 2), (2, 3), (-3, 3)])
-def test_toftul_vsh_differential_identities(m, j, superscript):
+@pytest.mark.parametrize("j, m", [(1, 0), (1, 1), (2, -1), (3, 2), (3, -3)])
+def test_complex_vsh_differential_identities(j, m, superscript):
     """div M = div N = 0, curl M = k N, curl N = k M, curl L = 0 and div L = -k z_j Y_jm."""
-    def field(vsh):
-        return lambda X: cart_field(vsh, m, j, X, superscript)
+    def field(harmonic):
+        return lambda X: cart_field(harmonic, j, m, X, superscript=superscript)
 
-    M = field(mielib.vsh_toftul_m)
-    N = field(mielib.vsh_toftul_n)
-    L = field(mielib.vsh_toftul_l)
+    M = field(vsh.M)
+    N = field(vsh.N)
+    L = field(vsh.L)
     J_M, J_N, J_L = jacobian(M, POINTS), jacobian(N, POINTS), jacobian(L, POINTS)
 
     r, theta, phi = mielib.cart2sph(*POINTS)
@@ -70,18 +71,15 @@ def test_toftul_vsh_differential_identities(m, j, superscript):
 
 
 @pytest.mark.parametrize("superscript", [1, 3])
-@pytest.mark.parametrize("m, n", [(0, 1), (1, 1), (1, 2), (2, 3), (3, 3)])
-@pytest.mark.parametrize("vsh_m, vsh_n", [
-    (mielib.vsh_bohren_me, mielib.vsh_bohren_ne),
-    (mielib.vsh_bohren_mo, mielib.vsh_bohren_no),
-])
-def test_bohren_vsh_differential_identities(vsh_m, vsh_n, m, n, superscript):
+@pytest.mark.parametrize("j, m", [(1, 0), (1, 1), (2, 1), (3, 2), (3, 3)])
+@pytest.mark.parametrize("parity", ['even', 'odd'])
+def test_real_vsh_differential_identities(parity, j, m, superscript):
     """div M = div N = 0, curl M = k N and curl N = k M, for each parity."""
     def M(X):
-        return cart_field(vsh_m, m, n, X, superscript)
+        return cart_field(vsh.M_real, j, m, X, superscript=superscript, parity=parity)
 
     def N(X):
-        return cart_field(vsh_n, m, n, X, superscript)
+        return cart_field(vsh.N_real, j, m, X, superscript=superscript, parity=parity)
 
     J_M, J_N = jacobian(M, POINTS), jacobian(N, POINTS)
 
@@ -112,18 +110,18 @@ def assert_gram(G, expected, scale):
 
 
 @pytest.mark.parametrize("superscript", [1, 3])
-def test_toftul_vsh_are_orthogonal(superscript):
+def test_complex_vsh_are_orthogonal(superscript):
     """On a sphere, M, N and L of different (m, j) are orthogonal, M is orthogonal to N and L, and the norms follow from |Y|^2 and |r grad Y|^2."""
     jmax, rho = 4, 1.7
     theta, phi, weights = sphere_quadrature(jmax)
-    labels = [(m, j) for j in range(1, jmax + 1) for m in range(-j, j + 1)]
+    labels = [(j, m) for j in range(1, jmax + 1) for m in range(-j, j + 1)]
 
-    def harmonics(vsh):
-        return np.array([vsh(m, j, rho, theta, phi, superscript=superscript) for m, j in labels])
+    def harmonics(harmonic):
+        return np.array([harmonic(j, m, rho, theta, phi, superscript=superscript) for j, m in labels])
 
-    M, N, L = harmonics(mielib.vsh_toftul_m), harmonics(mielib.vsh_toftul_n), harmonics(mielib.vsh_toftul_l)
+    M, N, L = harmonics(vsh.M), harmonics(vsh.N), harmonics(vsh.L)
 
-    j = np.array([j for _, j in labels])
+    j = np.array([j for j, _ in labels])
     z = mielib.special.spherical_z(j, rho, superscript=superscript)
     zp = mielib.special.spherical_z(j, rho, superscript=superscript, derivative=1)
     d = (z + rho * zp) / rho  # (rho z)' / rho
@@ -139,22 +137,21 @@ def test_toftul_vsh_are_orthogonal(superscript):
     assert_gram(gram(M, L, weights), 0, scale)
 
 
-def test_bohren_vsh_are_orthogonal():
+def test_real_vsh_are_orthogonal():
     """Bohren & Huffman: the real M_emn, M_omn and N_emn, N_omn are orthogonal on a sphere, and the norm of M is
     (1 + delta_m0) pi n (n+1) 2/(2n+1) (n+m)!/(n-m)! |z_n|^2."""
     nmax, rho = 4, 1.7
     theta, phi, weights = sphere_quadrature(nmax)
     # M_o0n = N_o0n = 0
-    labels = [(vsh_m, vsh_n, m, n)
-              for n in range(1, nmax + 1) for m in range(0, n + 1)
-              for vsh_m, vsh_n in [(mielib.vsh_bohren_me, mielib.vsh_bohren_ne), (mielib.vsh_bohren_mo, mielib.vsh_bohren_no)]
-              if m > 0 or vsh_m is mielib.vsh_bohren_me]
+    labels = [(n, m, parity)
+              for n in range(1, nmax + 1) for m in range(0, n + 1) for parity in ['even', 'odd']
+              if m > 0 or parity == 'even']
 
-    M = np.array([vsh_m(m, n, rho, theta, phi, superscript=1) for vsh_m, _, m, n in labels])
-    N = np.array([vsh_n(m, n, rho, theta, phi, superscript=1) for _, vsh_n, m, n in labels])
+    M = np.array([vsh.M_real(n, m, rho, theta, phi, superscript=1, parity=parity) for n, m, parity in labels])
+    N = np.array([vsh.N_real(n, m, rho, theta, phi, superscript=1, parity=parity) for n, m, parity in labels])
 
     norm_M = np.array([(1 + (m == 0)) * np.pi * n * (n + 1) * 2 / (2 * n + 1) * factorial(n + m) / factorial(n - m)
-                       * sp.spherical_jn(n, rho)**2 for _, _, m, n in labels])
+                       * sp.spherical_jn(n, rho)**2 for n, m, _ in labels])
     G_N = gram(N, N, weights)
 
     scale = max(np.max(norm_M), np.max(np.abs(G_N)))
