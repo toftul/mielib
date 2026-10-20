@@ -68,7 +68,8 @@ def vsh_bohren_me(m, n, rho, theta, phi, superscript):
 
     Mr = np.zeros(np.shape(Mp*zn))
 
-    return np.array([Mr, Mt*zn, Mp*zn])
+    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
+    return (-1)**m * np.array([Mr, Mt*zn, Mp*zn])
 
 
 def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
@@ -114,7 +115,8 @@ def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
 
     Mr = np.zeros(np.shape(Mp*zn))
 
-    return np.array([Mr, Mt*zn, Mp*zn])
+    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
+    return (-1)**m * np.array([Mr, Mt*zn, Mp*zn])
 
 
 def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
@@ -162,7 +164,8 @@ def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
     Nt = np.cos(m * phi) * dPnm * (zn/rho + znp)
     Np = -m * np.sin(m * phi) * Pnm / np.sin(theta) * (zn/rho + znp)
 
-    return np.array([Nr, Nt, Np])
+    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
+    return (-1)**m * np.array([Nr, Nt, Np])
 
 
 def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
@@ -210,7 +213,8 @@ def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
     Nt = np.sin(m * phi) * dPnm * (zn/rho + znp)
     Np = m * np.cos(m * phi) * Pnm / np.sin(theta) * (zn/rho + znp)
 
-    return np.array([Nr, Nt, Np])
+    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
+    return (-1)**m * np.array([Nr, Nt, Np])
 
 
 def vsh_jackson_x(m, n, theta, phi):

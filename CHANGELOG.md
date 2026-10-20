@@ -6,6 +6,14 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- The Bohren & Huffman harmonics `vsh_bohren_me`, `vsh_bohren_mo`, `vsh_bohren_ne` and `vsh_bohren_no`
+  now have the sign of the book for odd `m`.
+  Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but `scipy.special.lpmv` has it.
+  Before, the harmonics were (-1)^m times the book harmonics,
+  and the plane-wave expansion of Eqs. (4.37) and (4.38) gave -E and -H.
+
 ## [0.2.0] - 2026-10-19
 
 ### Added

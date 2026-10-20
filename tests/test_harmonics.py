@@ -14,6 +14,35 @@ def y1_and_dtheta(m, theta, phi):
     return c * np.sin(theta), c * np.cos(theta)
 
 
+def sph_vector_to_cart(A, theta, phi):
+    """Cartesian components of the vector A = (A_r, A_theta, A_phi)."""
+    Ar, At, Ap = A
+    return np.array([
+        Ar * np.sin(theta) * np.cos(phi) + At * np.cos(theta) * np.cos(phi) - Ap * np.sin(phi),
+        Ar * np.sin(theta) * np.sin(phi) + At * np.cos(theta) * np.sin(phi) + Ap * np.cos(phi),
+        Ar * np.cos(theta) - At * np.sin(theta),
+    ])
+
+
+def test_bohren_vsh_expand_the_plane_wave():
+    """Bohren & Huffman, Eqs. (4.37) and (4.38): the x-polarized plane wave E = x exp(ikz) and H = (k / omega mu) y exp(ikz)."""
+    rho = np.array([0.3, 1.7, 4.2, 6.0])
+    theta = np.array([0.4, 0.9, 2.2, 2.9])
+    phi = np.array([0.0, 0.4, 3.0, 5.5])
+
+    E, H = 0, 0
+    for n in range(1, 40):
+        En = 1j**n * (2 * n + 1) / (n * (n + 1))
+        E = E + En * (mielib.vsh_bohren_mo(1, n, rho, theta, phi, 1) - 1j * mielib.vsh_bohren_ne(1, n, rho, theta, phi, 1))
+        H = H + En * (mielib.vsh_bohren_me(1, n, rho, theta, phi, 1) + 1j * mielib.vsh_bohren_no(1, n, rho, theta, phi, 1))
+
+    wave = np.exp(1j * rho * np.cos(theta))
+    zero = 0 * wave
+    np.testing.assert_allclose(sph_vector_to_cart(E, theta, phi), [wave, zero, zero], atol=1e-12)
+    # H = -(k / omega mu) sum_n E_n (M_e1n + i N_o1n)
+    np.testing.assert_allclose(sph_vector_to_cart(H, theta, phi), [zero, -wave, zero], atol=1e-12)
+
+
 @pytest.mark.parametrize("m", [-1, 0, 1])
 def test_toftul_vsh_match_closed_form_for_j1(m):
     rho = np.array([0.4, 1.3, 2.5])
