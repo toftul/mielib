@@ -30,6 +30,10 @@ def _bohren_legendre(m, n, theta):
         P_n^m(cos θ), m P_n^m(cos θ) / sin θ and d_θ P_n^m(cos θ) as in Bohren & Huffman,
         that is, without the Condon-Shortley phase (-1)^m.
         All three are finite on the z axis, θ = 0 and θ = π.
+
+        With this P_n^m, the complex harmonics are W_mj = (-1)^m β_mj (W_emj + i W_omj), W = M, N,
+        with β_mj = sqrt((2j+1)/(4π) (j-m)!/(j+m)!).
+        Eq. (25) in the SM of arXiv:2210.04021 has no (-1)^m, because there the real harmonics use P_n^m with the phase.
     """
     # sph_legendre_p takes θ and not cos θ. Thus, it keeps the precision near the poles,
     # where cos θ = 1 in floating point for θ < 2^(-26.5) ≈ 1.05e-8.
