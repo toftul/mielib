@@ -18,6 +18,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   Thus, the plane-wave expansion gave zero on the z axis.
   The harmonics now use `scipy.special.sph_legendre_p`, which takes θ and not cos θ,
   and the limit of P_n^m / sin θ on the axis.
+- `vsh_jackson_x` no longer returns `nan` at θ = 0 and for n = 0.
+  For n = 0, it now returns zeros, because L Y_00 = 0.
 
 ## [0.2.0] - 2026-10-19
 

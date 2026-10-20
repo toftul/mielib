@@ -82,6 +82,27 @@ def test_toftul_vsh_match_closed_form_for_j1(m):
     np.testing.assert_allclose(mielib.vsh_toftul_l(m, 1, rho, theta, phi, superscript=1), L, atol=1e-14)
 
 
+@pytest.mark.parametrize("j", [1, 2, 3])
+def test_jackson_x_is_proportional_to_toftul_m(j):
+    """M_jm = -i sqrt(j (j+1)) z_j X_jm, also on the z axis."""
+    rho = 1.3
+    theta = np.array([0.0, 1e-10, 0.7, 2.4, np.pi])
+    phi = np.array([0.3, 1.0, 2.0, 4.0, 5.0])
+
+    for m in range(-j, j + 1):
+        X = mielib.vsh_jackson_x(m, j, theta, phi)
+        M = mielib.vsh_toftul_m(m, j, rho, theta, phi, superscript=1)
+
+        assert np.all(np.isfinite(X))
+        np.testing.assert_allclose(M, -1j * np.sqrt(j * (j + 1)) * sp.spherical_jn(j, rho) * X, atol=1e-14)
+
+    np.testing.assert_array_equal(theta[0], 0.0)
+
+
+def test_jackson_x_is_zero_for_n0():
+    np.testing.assert_array_equal(mielib.vsh_jackson_x(0, 0, np.array([0.0, 0.7]), 0.3), np.zeros((3, 2)))
+
+
 @pytest.mark.parametrize("parity, direct_m, direct_n", [
     ("even", mielib.vsh_bohren_me, mielib.vsh_bohren_ne),
     ("odd", mielib.vsh_bohren_mo, mielib.vsh_bohren_no),

@@ -177,6 +177,17 @@ def vsh_jackson_x(m, n, theta, phi):
     '''
         from Jackson's book paragraph 9.7
     '''
+    # convert input to np arrays
+    theta = np.array(theta, dtype=float)
+    phi = np.asarray(phi, dtype=float)
+
+    # to prevent devision by zero
+    theta[np.abs(theta) < 1e-15] = 1e-15
+
+    if n == 0:
+        # L Y_00 = 0
+        return np.zeros((3,) + np.shape(theta * phi), dtype=complex)
+
     Ymn = sp.sph_harm_y(n, m, theta, phi)
     dYmn = m/np.tan(theta) * Ymn
     if m+1 <= n:
