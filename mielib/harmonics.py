@@ -25,6 +25,26 @@ def spherical_radial_function_z(j, rho, p=0, superscript=1):
     return zj
 
         
+def _bohren_legendre(m, n, theta):
+    """
+        P_n^m(cos θ), m P_n^m(cos θ) / sin θ and d_θ P_n^m(cos θ) as in Bohren & Huffman,
+        that is, without the Condon-Shortley phase (-1)^m.
+        All three are finite on the z axis, θ = 0 and θ = π.
+    """
+    # sph_legendre_p takes θ and not cos θ. Thus, it keeps the precision near the poles,
+    # where cos θ = 1 in floating point for θ < 1.5e-8.
+    # sph_legendre_p has the Condon-Shortley phase and the normalization of Y_n^m.
+    scale = (-1)**m * np.sqrt(4*np.pi / (2*n+1)) * np.exp(0.5 * (sp.gammaln(n+m+1) - sp.gammaln(n-m+1)))
+    Pnm, dPnm = scale * sp.sph_legendre_p(n, m, theta, diff_n=1)
+
+    sin_theta = np.sin(theta)
+    on_axis = np.abs(sin_theta) < 1e-12
+    # on the axis, P_n^m / sin θ -> d_θ P_n^m / cos θ (l'Hôpital's rule)
+    pinm = m * np.where(on_axis, dPnm / np.cos(theta), Pnm / np.where(on_axis, 1, sin_theta))
+
+    return Pnm, pinm, dPnm
+
+
 def vsh_bohren_me(m, n, rho, theta, phi, superscript):
     '''
         vector Harmonics in spherical coordinates (r, θ, φ)
@@ -40,36 +60,21 @@ def vsh_bohren_me(m, n, rho, theta, phi, superscript):
     '''
     # convert input to np arrays
     rho = np.array(rho, dtype=complex)
-    theta = np.array(theta, dtype=float)
+    theta = np.asarray(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
-    theta[np.abs(theta) < 1e-15] = 1e-15
-
-    Mt = 0.0
-    Mp = 0.0
 
     zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    _, pinm, dPnm = _bohren_legendre(m, n, theta)
 
-    Mt = -m / np.sin(theta) * np.sin(m * phi) * sp.lpmv(m, n, np.cos(theta))
-
-    # formula for the d_θ Pnm(cos θ) is from here (I got a different sign though...)
-    # https://math.stackexchange.com/questions/391672/derivative-of-associated-legendre-polynomials-at-x-pm-1
-    # https://mathworld.wolfram.com/AssociatedLegendrePolynomial.html
-    dPnm = 1/np.sin(theta) * (np.abs(np.sin(theta)) * sp.lpmv(m+1, n,
-                                                              np.cos(theta)) + m * np.cos(theta) * sp.lpmv(m, n, np.cos(theta)))
-
-    # an old way
-    # dtheta = 1e-12
-    # dPnm = (lpmv(m, n, np.cos(theta + dtheta)) - lpmv(m, n, np.cos(theta - dtheta))) / (2*dtheta)
-
+    Mt = -np.sin(m * phi) * pinm
     Mp = -np.cos(m * phi) * dPnm
 
     Mr = np.zeros(np.shape(Mp*zn))
 
-    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
-    return (-1)**m * np.array([Mr, Mt*zn, Mp*zn])
+    return np.array([Mr, Mt*zn, Mp*zn])
 
 
 def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
@@ -87,36 +92,21 @@ def vsh_bohren_mo(m, n, rho, theta, phi, superscript):
     '''
     # convert input to np arrays
     rho = np.array(rho, dtype=complex)
-    theta = np.array(theta, dtype=float)
+    theta = np.asarray(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
-    theta[np.abs(theta) < 1e-15] = 1e-15
-
-    Mt = 0.0
-    Mp = 0.0
 
     zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
+    _, pinm, dPnm = _bohren_legendre(m, n, theta)
 
-    Mt = m / np.sin(theta) * np.cos(m * phi) * sp.lpmv(m, n, np.cos(theta))
-
-    # formula for the d_θ Pnm(cos θ) is from here (I got a different sign though...)
-    # https://math.stackexchange.com/questions/391672/derivative-of-associated-legendre-polynomials-at-x-pm-1
-    # https://mathworld.wolfram.com/AssociatedLegendrePolynomial.html
-    dPnm = 1/np.sin(theta) * (np.abs(np.sin(theta)) * sp.lpmv(m+1, n,
-                                                              np.cos(theta)) + m * np.cos(theta) * sp.lpmv(m, n, np.cos(theta)))
-
-    # an old way
-    # dtheta = 1e-12
-    # dPnm = (lpmv(m, n, np.cos(theta + dtheta)) - lpmv(m, n, np.cos(theta - dtheta))) / (2*dtheta)
-
+    Mt = np.cos(m * phi) * pinm
     Mp = -np.sin(m * phi) * dPnm
 
     Mr = np.zeros(np.shape(Mp*zn))
 
-    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
-    return (-1)**m * np.array([Mr, Mt*zn, Mp*zn])
+    return np.array([Mr, Mt*zn, Mp*zn])
 
 
 def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
@@ -134,38 +124,21 @@ def vsh_bohren_ne(m, n, rho, theta, phi, superscript):
     '''
     # convert input to np arrays
     rho = np.array(rho, dtype=complex)
-    theta = np.array(theta, dtype=float)
+    theta = np.asarray(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
-    theta[np.abs(theta) < 1e-15] = 1e-15
-
-    Nr = 0.0
-    Nt = 0.0
-    Np = 0.0
 
     zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
     znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
-
-    Pnm = sp.lpmv(m, n, np.cos(theta))
-
-    # formula for the d_θ Pnm(cos θ) is from here (I got a different sign though...)
-    # https://math.stackexchange.com/questions/391672/derivative-of-associated-legendre-polynomials-at-x-pm-1
-    # https://mathworld.wolfram.com/AssociatedLegendrePolynomial.html
-    dPnm = 1/np.sin(theta) * (np.abs(np.sin(theta)) * sp.lpmv(m+1, n,
-                                                              np.cos(theta)) + m * np.cos(theta) * sp.lpmv(m, n, np.cos(theta)))
-
-    # an old way
-    # dtheta = 1e-12
-    # dPnm = (lpmv(m, n, np.cos(theta + dtheta)) - lpmv(m, n, np.cos(theta - dtheta))) / (2*dtheta)
+    Pnm, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Nr = zn/rho * np.cos(m*phi) * n * (n+1) * Pnm
     Nt = np.cos(m * phi) * dPnm * (zn/rho + znp)
-    Np = -m * np.sin(m * phi) * Pnm / np.sin(theta) * (zn/rho + znp)
+    Np = -np.sin(m * phi) * pinm * (zn/rho + znp)
 
-    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
-    return (-1)**m * np.array([Nr, Nt, Np])
+    return np.array([Nr, Nt, Np])
 
 
 def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
@@ -183,38 +156,21 @@ def vsh_bohren_no(m, n, rho, theta, phi, superscript=1):
     '''
     # convert input to np arrays
     rho = np.array(rho, dtype=complex)
-    theta = np.array(theta, dtype=float)
+    theta = np.asarray(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
 
     # to prevent devision by zero
     rho[np.abs(rho) < 1e-15] = 1e-15
-    theta[np.abs(theta) < 1e-15] = 1e-15
-
-    Nr = 0.0
-    Nt = 0.0
-    Np = 0.0
 
     zn = spherical_radial_function_z(n, rho, p=0, superscript=superscript)
     znp = spherical_radial_function_z(n, rho, p=1, superscript=superscript)
-
-    Pnm = sp.lpmv(m, n, np.cos(theta))
-
-    # formula for the d_θ Pnm(cos θ) is from here (I got a different sign though...)
-    # https://math.stackexchange.com/questions/391672/derivative-of-associated-legendre-polynomials-at-x-pm-1
-    # https://mathworld.wolfram.com/AssociatedLegendrePolynomial.html
-    dPnm = 1/np.sin(theta) * (np.abs(np.sin(theta)) * sp.lpmv(m+1, n,
-                                                              np.cos(theta)) + m * np.cos(theta) * sp.lpmv(m, n, np.cos(theta)))
-
-    # an old way
-    # dtheta = 1e-12
-    # dPnm = (lpmv(m, n, np.cos(theta + dtheta)) - lpmv(m, n, np.cos(theta - dtheta))) / (2*dtheta)
+    Pnm, pinm, dPnm = _bohren_legendre(m, n, theta)
 
     Nr = zn/rho * np.sin(m * phi) * n * (n+1) * Pnm
     Nt = np.sin(m * phi) * dPnm * (zn/rho + znp)
-    Np = m * np.cos(m * phi) * Pnm / np.sin(theta) * (zn/rho + znp)
+    Np = np.cos(m * phi) * pinm * (zn/rho + znp)
 
-    # Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but sp.lpmv has it
-    return (-1)**m * np.array([Nr, Nt, Np])
+    return np.array([Nr, Nt, Np])
 
 
 def vsh_jackson_x(m, n, theta, phi):

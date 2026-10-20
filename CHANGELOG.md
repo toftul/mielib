@@ -13,6 +13,11 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   Bohren & Huffman use P_n^m without the Condon-Shortley phase (-1)^m, but `scipy.special.lpmv` has it.
   Before, the harmonics were (-1)^m times the book harmonics,
   and the plane-wave expansion of Eqs. (4.37) and (4.38) gave -E and -H.
+- The Bohren & Huffman harmonics are now correct on the z axis and near it.
+  Before, they were zero for m = 1 when θ < 1.5e-8 or θ = π, because cos θ is then 1 or -1 in floating point.
+  Thus, the plane-wave expansion gave zero on the z axis.
+  The harmonics now use `scipy.special.sph_legendre_p`, which takes θ and not cos θ,
+  and the limit of P_n^m / sin θ on the axis.
 
 ## [0.2.0] - 2026-10-19
 

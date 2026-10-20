@@ -24,10 +24,14 @@ def sph_vector_to_cart(A, theta, phi):
     ])
 
 
-def test_bohren_vsh_expand_the_plane_wave():
+@pytest.mark.parametrize("theta", [
+    np.array([0.4, 0.9, 2.2, 2.9]),
+    # on the z axis and near it
+    np.array([0.0, 1e-10, np.pi - 1e-10, np.pi]),
+])
+def test_bohren_vsh_expand_the_plane_wave(theta):
     """Bohren & Huffman, Eqs. (4.37) and (4.38): the x-polarized plane wave E = x exp(ikz) and H = (k / omega mu) y exp(ikz)."""
     rho = np.array([0.3, 1.7, 4.2, 6.0])
-    theta = np.array([0.4, 0.9, 2.2, 2.9])
     phi = np.array([0.0, 0.4, 3.0, 5.5])
 
     E, H = 0, 0
@@ -41,6 +45,22 @@ def test_bohren_vsh_expand_the_plane_wave():
     np.testing.assert_allclose(sph_vector_to_cart(E, theta, phi), [wave, zero, zero], atol=1e-12)
     # H = -(k / omega mu) sum_n E_n (M_e1n + i N_o1n)
     np.testing.assert_allclose(sph_vector_to_cart(H, theta, phi), [zero, -wave, zero], atol=1e-12)
+
+
+def test_bohren_angular_functions_match_the_recurrence():
+    """pi_n = P_n^1 / sin(theta) and tau_n = d P_n^1 / d theta from the upward recurrence of Bohren & Huffman, also on the z axis."""
+    theta = np.array([0.0, 1e-10, 0.7, 2.4, np.pi - 1e-10, np.pi])
+    mu = np.cos(theta)
+
+    pi_prev, pi_n = np.zeros_like(theta), np.ones_like(theta)
+    for n in range(1, 12):
+        tau_n = n * mu * pi_n - (n + 1) * pi_prev
+        _, pinm, dPnm = mielib.harmonics._bohren_legendre(1, n, theta)
+
+        np.testing.assert_allclose(pinm, pi_n, rtol=1e-12, atol=1e-12)
+        np.testing.assert_allclose(dPnm, tau_n, rtol=1e-12, atol=1e-12)
+
+        pi_prev, pi_n = pi_n, ((2 * n + 1) * mu * pi_n - (n + 1) * pi_prev) / n
 
 
 @pytest.mark.parametrize("m", [-1, 0, 1])
