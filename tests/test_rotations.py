@@ -12,6 +12,18 @@ def test_sph2cart_inverts_cart2sph():
     np.testing.assert_allclose(mielib.sph2cart(*mielib.cart2sph(x, y, z)), (x, y, z), atol=1e-14)
 
 
+def test_cart2sph_at_the_origin_and_near_the_z_axis():
+    x = np.array([0.0, 1e-10, 1e-10])
+    y = np.array([0.0, 0.0, 0.0])
+    z = np.array([0.0, 1.0, -1.0])
+
+    r, theta, phi = mielib.cart2sph(x, y, z)
+
+    np.testing.assert_allclose(r, [0.0, 1.0, 1.0], rtol=1e-15)
+    np.testing.assert_allclose(theta, [0.0, 1e-10, np.pi - 1e-10], rtol=1e-14)
+    np.testing.assert_allclose(phi, [0.0, 0.0, 0.0], atol=1e-15)
+
+
 def test_cyl2cart_inverts_cart2cyl():
     x = np.array([1.0, -0.5, 0.2, 0.0])
     y = np.array([0.3, 2.0, -1.5, 0.7])

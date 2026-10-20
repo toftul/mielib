@@ -23,6 +23,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - `rotation_matrix_3d_sph` and `rotation_matrix_3d_cyl` now accept arrays of angles.
   The matrix then has the shape (3, 3) + the shape of the angles.
   Before, they raised `ValueError`, because some entries were the scalars 0 and 1.
+- `cart2sph` now gives θ = 0 at the origin. Before, it gave `nan`.
+  θ is now also accurate near the z axis. Before, it was 0 for x = 1e-10, y = 0, z = 1.
 
 ## [0.2.0] - 2026-10-19
 

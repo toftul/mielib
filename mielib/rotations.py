@@ -56,7 +56,8 @@ def rotation_matrix_3d_cyl(phi, axis='z'):
 
 def cart2sph(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
-    theta = np.arccos(z/r)
+    # arccos(z/r) is nan at r = 0 and loses the precision near the z axis
+    theta = np.arctan2(np.hypot(x, y), z)
     phi = np.arctan2(y, x)
 
     return r, theta, phi
