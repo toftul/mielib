@@ -13,6 +13,12 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   The two functions use the same sign convention. Thus, T^e_n = -a_n and T^m_n = -b_n in optics, but T_n = a_n in acoustics,
   because Bohren & Huffman and Phys. Rev. Lett. 123, 183901 (2019) define the scattering coefficients with opposite signs.
   `optics_mie_a`, `optics_mie_b` and `acoustics_mie_a` do not change.
+- `mielib.__version__` gives the installed version.
+
+### Changed
+
+- Each module has an `__all__` list, and `mielib` exports only these functions.
+  Before, `from mielib import *` also gave `np`, `sp` and other names that the modules import.
 
 ## [0.2.1] - 2026-10-21
 

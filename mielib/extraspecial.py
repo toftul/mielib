@@ -1,6 +1,15 @@
 import numpy as np
 import scipy.special as sp
 
+__all__ = [
+    "spherical_h1",
+    "spherical_jnpp",
+    "spherical_ynpp",
+    "spherical_h1pp",
+    "spherical_h2",
+    "wiscombe_nstop",
+]
+
 
 def spherical_h1(n, z, p=0):
     return sp.spherical_jn(n, z, p) + 1j * sp.spherical_yn(n, z, p)

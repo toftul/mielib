@@ -2,6 +2,17 @@ import scipy.special as sp
 import numpy as np
 from mielib import extraspecial
 
+__all__ = [
+    "optics_mie_a",
+    "optics_mie_b",
+    "optics_mie_c",
+    "optics_mie_d",
+    "optics_tmatrix",
+    "optics_scattering_cross_section",
+    "optics_extinction_cross_section",
+    "optics_absorption_cross_section",
+]
+
 
 def optics_mie_a(n, k0a, eps_p, mu_p=1, eps_h=1, mu_h=1, get_denominator=False):
     """

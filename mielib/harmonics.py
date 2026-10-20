@@ -3,6 +3,21 @@ import scipy.special as sp
 
 from mielib import extraspecial
 
+__all__ = [
+    "spherical_radial_function_z",
+    "vsh_bohren_me",
+    "vsh_bohren_mo",
+    "vsh_bohren_ne",
+    "vsh_bohren_no",
+    "vsh_jackson_x",
+    "vsh_toftul_m",
+    "vsh_toftul_n",
+    "vsh_toftul_l",
+    "vector_spherical_harmonic_m",
+    "vector_spherical_harmonic_n",
+    "vector_spherical_harmonic_l",
+]
+
 def spherical_radial_function_z(j, rho, p=0, superscript=1):
     """
         j - radial quantum number

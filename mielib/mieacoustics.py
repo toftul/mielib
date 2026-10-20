@@ -2,6 +2,16 @@ import numpy as np
 import scipy.special as sp
 from mielib import extraspecial
 
+__all__ = [
+    "acoustics_mie_a",
+    "acoustics_mie_c",
+    "acoustics_tmatrix",
+    "acoustics_scattering_cross_section",
+    "acoustics_pressure_cross_section",
+    "acoustics_extinction_cross_section",
+    "acoustics_absorption_cross_section",
+]
+
 def acoustics_mie_a(n, ka, rho1, beta1, get_denominator=False):
     """
         Acoustic Mie scattering coefficient, Eq. (4) in the Supplemental Material of
