@@ -161,7 +161,7 @@ def test_bohren_coefficients_relate_to_the_amplitudes(x, eps_rel, mu_rel):
 
     te, tm = optics.tmatrix(*args)
     a_in, b_in = optics.internal_amplitudes(*args)
-    da, db = optics.denominators(*args)
+    da, db = optics.denominator_a(*args), optics.denominator_b(*args)
 
     np.testing.assert_allclose(te, -optics.mie_a(*args), rtol=1e-14)
     np.testing.assert_allclose(tm, -optics.mie_b(*args), rtol=1e-14)
@@ -179,7 +179,8 @@ def test_duality_swaps_electric_and_magnetic(x, eps_rel, mu_rel):
 
     np.testing.assert_allclose(optics.mie_a(*dual), optics.mie_b(*direct), rtol=1e-13)
     np.testing.assert_allclose(optics.mie_b(*dual), optics.mie_a(*direct), rtol=1e-13)
-    np.testing.assert_allclose(optics.denominators(*dual), optics.denominators(*direct)[::-1], rtol=1e-13)
+    np.testing.assert_allclose(optics.denominator_a(*dual), optics.denominator_b(*direct), rtol=1e-13)
+    np.testing.assert_allclose(optics.denominator_b(*dual), optics.denominator_a(*direct), rtol=1e-13)
     np.testing.assert_allclose(optics.internal_amplitudes(*dual), optics.internal_amplitudes(*direct)[::-1], rtol=1e-13)
 
 

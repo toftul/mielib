@@ -19,7 +19,8 @@ __all__ = [
     "mie_b",
     "mie_c",
     "mie_d",
-    "denominators",
+    "denominator_a",
+    "denominator_b",
     "internal_amplitudes",
     "tmatrix",
     "cross_sections",
@@ -106,22 +107,34 @@ def mie_d(j, x, eps_rel, mu_rel=1):
     return 1j * m**2 / (sqrt_eps * denominator)
 
 
-def denominators(j, x, eps_rel, mu_rel=1):
+def denominator_a(j, x, eps_rel, mu_rel=1):
     """
-        Denominators D^a_j and D^b_j of a_j and b_j:
-            D^a_j = sqrt(eps_rel) ψ_j(mx) ξ_j'(x) - sqrt(mu_rel) ξ_j(x) ψ_j'(mx),
-        and D^b_j is D^a_j with eps_rel <-> mu_rel. Their zeros in the complex x plane are the TM and TE modes.
+        Denominator D^a_j of a_j, d_j and A^in / A^inc:
+            D^a_j = sqrt(eps_rel) ψ_j(mx) ξ_j'(x) - sqrt(mu_rel) ξ_j(x) ψ_j'(mx).
+        Its zeros in the complex x plane are the TM modes.
 
         Arguments:
             j - multipole order, the total angular momentum
             x - size parameter k a in the host
             eps_rel, mu_rel - permittivity and permeability of the particle relative to the host
-
-        Returns:
-            D^a_j, D^b_j
     """
-    (_, denominator_a), (_, denominator_b), _, _ = _parts(j, x, eps_rel, mu_rel)
-    return denominator_a, denominator_b
+    (_, denominator), _, _, _ = _parts(j, x, eps_rel, mu_rel)
+    return denominator
+
+
+def denominator_b(j, x, eps_rel, mu_rel=1):
+    """
+        Denominator D^b_j of b_j, c_j and B^in / B^inc. D^b_j is D^a_j with eps_rel <-> mu_rel:
+            D^b_j = sqrt(mu_rel) ψ_j(mx) ξ_j'(x) - sqrt(eps_rel) ξ_j(x) ψ_j'(mx).
+        Its zeros in the complex x plane are the TE modes.
+
+        Arguments:
+            j - multipole order, the total angular momentum
+            x - size parameter k a in the host
+            eps_rel, mu_rel - permittivity and permeability of the particle relative to the host
+    """
+    _, (_, denominator), _, _ = _parts(j, x, eps_rel, mu_rel)
+    return denominator
 
 
 def internal_amplitudes(j, x, eps_rel, mu_rel=1):

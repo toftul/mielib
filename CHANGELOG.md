@@ -6,6 +6,14 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- `optics.denominators` is now two functions, `optics.denominator_a` and `optics.denominator_b`,
+  in the same way as `optics.mie_a` and `optics.mie_b`.
+  A search for the modes of one type needs only one of the two.
+  For `optics.denominators(j, x, eps_rel, mu_rel)`, use `optics.denominator_a(j, x, eps_rel, mu_rel)`
+  and `optics.denominator_b(j, x, eps_rel, mu_rel)`. The values do not change.
+
 ## [0.3.0] - 2026-10-21
 
 This release changes the API and does not keep the old names.
