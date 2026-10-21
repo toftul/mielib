@@ -6,6 +6,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-21
+
 ### Changed
 
 - `optics.denominators` is now two functions, `optics.denominator_a` and `optics.denominator_b`,
@@ -13,6 +15,9 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   A search for the modes of one type needs only one of the two.
   For `optics.denominators(j, x, eps_rel, mu_rel)`, use `optics.denominator_a(j, x, eps_rel, mu_rel)`
   and `optics.denominator_b(j, x, eps_rel, mu_rel)`. The values do not change.
+- The README describes the API for new users, with a quick start.
+  It links the theory note `docs/theory/mielib_theory.pdf` and the PhD thesis that the note follows.
+  The example notebooks have new figures and do not need a network connection for the plot style.
 
 ## [0.3.0] - 2026-10-21
 
@@ -192,7 +197,8 @@ The table in "Migration from 0.2" gives the new call for each old call.
 This is the last release before this changelog.
 For older changes, see the git history.
 
-[Unreleased]: https://github.com/toftul/mielib/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/toftul/mielib/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/toftul/mielib/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/toftul/mielib/compare/0.2.1...0.3.0
 [0.2.1]: https://github.com/toftul/mielib/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/toftul/mielib/compare/0.1.12...0.2.0
