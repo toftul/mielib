@@ -6,6 +6,11 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- The example notebook `examples/fields.ipynb` computes the fields near a sphere in a plane wave from the multipole amplitudes:
+  the electric and the magnetic fields in optics, and the pressure and the velocity in acoustics.
+
 ## [0.3.1] - 2026-10-21
 
 ### Changed

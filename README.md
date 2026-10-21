@@ -67,6 +67,8 @@ The [examples](https://github.com/toftul/mielib/tree/main/examples) folder has J
 
 - [cross_sections.ipynb](https://github.com/toftul/mielib/blob/main/examples/cross_sections.ipynb):
   the cross sections of a sphere and their multipole parts, in optics and in acoustics.
+- [fields.ipynb](https://github.com/toftul/mielib/blob/main/examples/fields.ipynb):
+  the fields near a sphere in a plane wave, the electric and the magnetic fields in optics and the pressure and the velocity in acoustics.
 - [harmonics.ipynb](https://github.com/toftul/mielib/blob/main/examples/harmonics.ipynb):
   the vector spherical harmonics, and a plane wave from the harmonics.
 
