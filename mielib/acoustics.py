@@ -44,6 +44,24 @@ def _parts(j, x, rho_rel, beta_rel):
     return numerator, denominator, sqrt_rho
 
 
+def _series(jmax, x, rho_rel, beta_rel):
+    """
+        a_j for the orders j = 0, ..., jmax on axis 0. The form of _parts divided by j_j(k_p a),
+            a_j = [sqrt(beta_rel) E_j j_j(x) - sqrt(rho_rel) j_j'(x)] / [sqrt(rho_rel) h_j'(x) - sqrt(beta_rel) E_j h_j(x)],
+        with E_j = j_j'(k_p a) / j_j(k_p a), does not overflow for a large absorbing sphere,
+        where j_j(k_p a) grows as exp|Im(k_p a)|.
+    """
+    sqrt_rho = np.sqrt(np.asarray(rho_rel, dtype=complex))
+    sqrt_beta = np.sqrt(np.asarray(beta_rel, dtype=complex))
+    E = special._log_derivative_jn(jmax, sqrt_rho * sqrt_beta * x)
+
+    j = np.arange(jmax + 1).reshape((-1,) + (1,) * np.ndim(x))
+    jx, djx = special.spherical_jn(j, x), special.spherical_jn(j, x, derivative=1)
+    hx, dhx = special.spherical_h1(j, x), special.spherical_h1(j, x, derivative=1)
+
+    return (sqrt_beta * E * jx - sqrt_rho * djx) / (sqrt_rho * dhx - sqrt_beta * E * hx)
+
+
 def mie_a(j, x, rho_rel, beta_rel):
     """
         Acoustic Mie scattering coefficient a_j, Eq. (4) in the Supplemental Material of
@@ -136,6 +154,7 @@ def cross_sections(k, a, rho_rel, beta_rel, *, jmin=0, jmax=None, norm='none'):
     """
         Cross sections of a sphere for a plane wave.
         The cross sections are not defined in a lossy host, because the scattered field decays.
+        The series uses the logarithmic derivative j_j'(k_p a) / j_j(k_p a), so it is finite also for a large absorbing sphere.
 
         Arguments:
             k - wavenumber in the host, real and positive
@@ -164,8 +183,7 @@ def cross_sections(k, a, rho_rel, beta_rel, *, jmin=0, jmax=None, norm='none'):
 
     # the terms above jstop are negligible, and they are nan when h_j overflows
     with np.errstate(all='ignore'):
-        numerator, denominator, _ = _parts(j, x, rho_rel, beta_rel)
-        an = np.where((j >= jmin) & (j <= jstop), numerator / denominator, 0)
+        an = np.where((j >= jmin) & (j <= jstop), _series(jmax, x, rho_rel, beta_rel), 0)
 
     w = 2 * j + 1
     prefactor = 4 * np.pi / k**2

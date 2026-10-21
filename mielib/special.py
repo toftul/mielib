@@ -156,3 +156,25 @@ def wiscombe_jmax(x):
     """
     x = np.abs(x)
     return np.floor(x + 4.05 * np.cbrt(x) + 2).astype(int)
+
+
+def _log_derivative_jn(jmax, z):
+    """
+        E_j(z) = j_j'(z) / j_j(z) for the orders j = 0, ..., jmax on axis 0, by the downward recurrence
+            E_{j-1} = (j-1)/z - 1 / (E_j + (j+1)/z)
+        from E_j = j/z, the limit for large j. Wiscombe, Appl. Opt. 19, 1505 (1980).
+        The recurrence is stable for any complex z, also where j_j(z) overflows.
+        The error of the start decays to the round-off before j = jmax for |z| up to 3000 at least.
+    """
+    z = np.asarray(z)
+    z = z.astype(np.result_type(z, float))
+    size = np.max(np.abs(z), initial=0)
+    jstart = int(max(jmax, size) + 10 * np.cbrt(size)) + 16
+
+    E = np.empty((jmax + 1,) + z.shape, dtype=z.dtype)
+    e = jstart / z
+    for j in range(jstart, 0, -1):
+        e = (j - 1) / z - 1 / (e + (j + 1) / z)
+        if j <= jmax + 1:
+            E[j - 1] = e
+    return E

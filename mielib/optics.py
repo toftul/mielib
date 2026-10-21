@@ -51,6 +51,29 @@ def _parts(j, x, eps_rel, mu_rel):
     return numerator_denominator(sqrt_eps, sqrt_mu), numerator_denominator(sqrt_mu, sqrt_eps), m, sqrt_eps
 
 
+def _series(jmax, x, eps_rel, mu_rel):
+    """
+        a_j and b_j for the orders j = 0, ..., jmax on axis 0. The form of _parts divided by ψ_j(mx),
+            a_j = [s1 ψ_j'(x) - s2 D_j ψ_j(x)] / [s1 ξ_j'(x) - s2 D_j ξ_j(x)],   D_j = ψ_j'(mx) / ψ_j(mx),
+        does not overflow for a large absorbing sphere, where ψ_j(mx) grows as exp|Im(mx)|.
+        a_0 and b_0 have no meaning.
+    """
+    sqrt_eps = np.sqrt(np.asarray(eps_rel, dtype=complex))
+    sqrt_mu = np.sqrt(np.asarray(mu_rel, dtype=complex))
+    mx = sqrt_eps * sqrt_mu * x
+    # ψ_j = z j_j, so ψ_j' / ψ_j = j_j' / j_j + 1/z
+    D = special._log_derivative_jn(jmax, mx) + 1 / mx
+
+    j = np.arange(jmax + 1).reshape((-1,) + (1,) * np.ndim(x))
+    psi_x, dpsi_x = special.riccati_psi(j, x), special.riccati_psi(j, x, derivative=1)
+    xi_x, dxi_x = special.riccati_xi(j, x), special.riccati_xi(j, x, derivative=1)
+
+    def coefficient(s1, s2):
+        return (s1 * dpsi_x - s2 * D * psi_x) / (s1 * dxi_x - s2 * D * xi_x)
+
+    return coefficient(sqrt_eps, sqrt_mu), coefficient(sqrt_mu, sqrt_eps)
+
+
 def mie_a(j, x, eps_rel, mu_rel=1):
     """
         Electric Mie coefficient a_j, Bohren & Huffman, Ch. 4.
@@ -206,6 +229,7 @@ def cross_sections(k, a, eps_rel, mu_rel=1, *, jmin=1, jmax=None, norm='none'):
     """
         Cross sections of a sphere for a plane wave, Bohren & Huffman, Ch. 4.
         The cross sections are not defined in a lossy host, because the scattered field decays.
+        The series uses the logarithmic derivative ψ_j'(mx) / ψ_j(mx), so it is finite also for a large absorbing sphere.
 
         Arguments:
             k - wavenumber in the host, real and positive
@@ -234,10 +258,9 @@ def cross_sections(k, a, eps_rel, mu_rel=1, *, jmin=1, jmax=None, norm='none'):
 
     # the terms above jstop are negligible, and they are nan when h_j overflows
     with np.errstate(all='ignore'):
-        (numerator_a, denominator_a), (numerator_b, denominator_b), _, _ = _parts(j, x, eps_rel, mu_rel)
+        an, bn = _series(jmax, x, eps_rel, mu_rel)
         use = (j >= max(jmin, 1)) & (j <= jstop)
-        an = np.where(use, numerator_a / denominator_a, 0)
-        bn = np.where(use, numerator_b / denominator_b, 0)
+        an, bn = np.where(use, an, 0), np.where(use, bn, 0)
 
     w = 2 * j + 1
     prefactor = 2 * np.pi / k**2

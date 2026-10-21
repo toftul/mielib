@@ -46,7 +46,9 @@ def test_one_call_covers_small_and_large_spheres(jmax):
     for name in ['sca', 'ext', 'abs', 'back', 'pr', 'g']:
         values = getattr(one_call, name)
         assert np.all(np.isfinite(values))
-        np.testing.assert_allclose(values, [getattr(s, name) for s in separate], rtol=1e-12, atol=1e-30)
+        # the sphere is lossless, so abs = ext - sca is the round-off of ext
+        atol = 1e-14 * np.max(one_call.ext) if name == 'abs' else 1e-30
+        np.testing.assert_allclose(values, [getattr(s, name) for s in separate], rtol=1e-12, atol=atol)
 
 
 def test_input_broadcasts_to_a_grid():

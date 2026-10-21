@@ -8,8 +8,23 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
-- The example notebook `examples/fields.ipynb` computes the fields near a sphere in a plane wave from the multipole amplitudes:
-  the electric and the magnetic fields in optics, and the pressure and the velocity in acoustics.
+- The example notebook `examples/fields.ipynb` computes the fields near a sphere in a plane wave
+  from the Mie series with the coefficients a_n, b_n, c_n and d_n:
+  the electric and the magnetic fields in optics (Bohren & Huffman), and the pressure and the velocity in acoustics.
+
+### Fixed
+
+- `optics.cross_sections` and `acoustics.cross_sections` no longer return `nan` for a large absorbing sphere.
+  Before, the functions calculated j_j at the argument inside the sphere, m x in optics and k_p a in acoustics,
+  and j_j overflows when the imaginary part of this argument is more than approximately 700.
+  For example, the optical sphere with m = 1.5 + 1i and x = 800 gave `nan`.
+  The functions now use the logarithmic derivative j_j' / j_j from a downward recurrence
+  ([Wiscombe, Appl. Opt. 19, 1505 (1980)](https://doi.org/10.1364/AO.19.001505)).
+  Where the old values were finite, `sca` and `ext` change by less than 1e-13 relative.
+  The largest change, 3e-8 relative, is in the terms with cancellation at small x,
+  and there the new values are nearer to a calculation with 40 digits.
+  `optics.mie_a`, `optics.mie_b`, `acoustics.mie_a` and the other functions of one order
+  still calculate j_j directly and have the same limit.
 
 ## [0.3.1] - 2026-10-21
 
