@@ -239,6 +239,8 @@ def cross_sections(k, a, eps_rel, mu_rel=1, *, jmin=1, jmax=None, norm='none'):
         np.sum(jj * (jj + 2) / (jj + 1) * np.real(an[1:-1] * np.conj(an[2:]) + bn[1:-1] * np.conj(bn[2:])), axis=0)
         + np.sum((2 * j[1:] + 1) / (j[1:] * (j[1:] + 1)) * np.real(an[1:] * np.conj(bn[1:])), axis=0))
     g = np.divide(g_sca, sca, out=np.zeros(np.shape(sca)), where=sca > 0)
+    # [()] gives a NumPy scalar for a scalar input, as np.sum gives for the other totals
+    g = g[()]
 
     sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     return CrossSections(

@@ -220,3 +220,10 @@ def test_cross_sections_from_the_tmatrix():
     q = optics.cross_sections(k, 1.0, eps_rel, mu_rel)
     np.testing.assert_allclose(sigma_ext, q.ext, rtol=1e-12)
     np.testing.assert_allclose(sigma_sc, q.sca, rtol=1e-12)
+
+
+def test_totals_are_scalars_for_a_scalar_input():
+    q = optics.cross_sections(1.0, 1.0, 4.0)
+    for name in ['sca', 'ext', 'abs', 'back', 'pr', 'g']:
+        assert isinstance(getattr(q, name), np.float64), name
+    assert q.sca_e.shape == (special.wiscombe_jmax(1.0) + 1,)

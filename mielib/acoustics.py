@@ -177,6 +177,8 @@ def cross_sections(k, a, rho_rel, beta_rel, *, jmin=0, jmax=None, norm='none'):
     # g sca = integral of cos θ |f|^2 over the directions
     g_sca = prefactor * np.sum(2 * (j[:-1] + 1) * np.real(an[:-1] * np.conj(an[1:])), axis=0)
     g = np.divide(g_sca, sca, out=np.zeros(np.shape(sca)), where=sca > 0)
+    # [()] gives a NumPy scalar for a scalar input, as np.sum gives for the other totals
+    g = g[()]
 
     sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     return CrossSections(

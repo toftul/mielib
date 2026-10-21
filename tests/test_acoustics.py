@@ -104,3 +104,10 @@ def test_cross_sections_from_the_tmatrix():
     q = acoustics.cross_sections(k, 1.0, rho_rel, beta_rel)
     np.testing.assert_allclose(-4 * np.pi / k**2 * np.sum((2 * j + 1) * np.real(t)), q.ext, rtol=1e-12)
     np.testing.assert_allclose(4 * np.pi / k**2 * np.sum((2 * j + 1) * np.abs(t)**2), q.sca, rtol=1e-12)
+
+
+def test_totals_are_scalars_for_a_scalar_input():
+    q = acoustics.cross_sections(1.0, 1.0, 2.0, 0.5)
+    for name in ['sca', 'ext', 'abs', 'pr', 'back', 'g']:
+        assert isinstance(getattr(q, name), np.float64), name
+    assert q.sca_j.shape == (special.wiscombe_jmax(1.0) + 1,)
