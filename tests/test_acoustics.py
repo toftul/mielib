@@ -22,6 +22,16 @@ def test_default_series_is_converged():
     np.testing.assert_allclose(acoustics.cross_sections(ka, 1.0, rho_rel, beta_rel).sca, sigma_sc_direct, rtol=1e-12)
 
 
+def test_large_absorbing_sphere():
+    """|Im(k_p a)| = 750, where j_j(k_p a) overflows. The values are from the direct formulas in mpmath with 40 digits."""
+    q = acoustics.cross_sections(250.0, 1.0, 2.0, 1 + 10j, norm='geom')
+
+    np.testing.assert_allclose(q.sca, 1.4895136960796431, rtol=1e-10)
+    np.testing.assert_allclose(q.ext, 2.0449052737590083, rtol=1e-10)
+    np.testing.assert_allclose(q.back, 0.2885514228067641, rtol=1e-10)
+    np.testing.assert_allclose(q.g, 0.7486840484791188, rtol=1e-10)
+
+
 @pytest.mark.parametrize("jmax", [None, 300])
 def test_one_call_covers_small_and_large_spheres(jmax):
     k = np.array([0.01, 0.1, 1.0, 60.0])

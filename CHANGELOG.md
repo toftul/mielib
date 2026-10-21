@@ -11,6 +11,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The example notebook `examples/fields.ipynb` computes the fields near a sphere in a plane wave
   from the Mie series with the coefficients a_n, b_n, c_n and d_n:
   the electric and the magnetic fields in optics (Bohren & Huffman), and the pressure and the velocity in acoustics.
+- Tests for large absorbing spheres, where j_j overflows inside the sphere:
+  the optical efficiencies against miepython 3.3.0, and the acoustic efficiencies against the direct formulas in mpmath with 40 digits.
 
 ### Fixed
 
