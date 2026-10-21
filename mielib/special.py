@@ -178,3 +178,25 @@ def _log_derivative_jn(jmax, z):
         if j <= jmax + 1:
             E[j - 1] = e
     return E
+
+
+def _spherical_orders(jmax, x):
+    """
+        j_j(x), j_j'(x), h_j(x) and h_j'(x), with h_j = h_j^(1), for j = 0, 1, ..., jmax in turn and a real x.
+        y_j comes from the upward recurrence, which is stable because y_j grows with j,
+        and j_j from the Wronskian j_j y_j' - j_j' y_j = 1/x^2 with j_j' = E_j j_j:
+            j_j = 1 / [x^2 (y_j' - E_j y_j)].
+        The upward recurrence for j_j itself loses the precision for j > x.
+        One order at a time keeps the memory small for a large grid of x.
+    """
+    x = np.asarray(x, dtype=float)
+    E = _log_derivative_jn(jmax, x)
+    # y_{-1} = j_0 and y_0
+    y_previous, y = np.sin(x) / x, -np.cos(x) / x
+    for j in range(jmax + 1):
+        if j > 0:
+            y_previous, y = y, (2*j - 1) / x * y - y_previous
+        dy = y_previous - (j + 1) / x * y
+        jn = 1 / (x**2 * (dy - E[j] * y))
+        djn = E[j] * jn
+        yield jn, djn, jn + 1j * y, djn + 1j * dy

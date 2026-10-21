@@ -46,7 +46,7 @@ def _parts(j, x, rho_rel, beta_rel):
 
 def _series(jmax, x, rho_rel, beta_rel):
     """
-        a_j for the orders j = 0, ..., jmax on axis 0. The form of _parts divided by j_j(k_p a),
+        a_j for the orders j = 0, ..., jmax on axis 0 and a real x. The form of _parts divided by j_j(k_p a),
             a_j = [sqrt(beta_rel) E_j j_j(x) - sqrt(rho_rel) j_j'(x)] / [sqrt(rho_rel) h_j'(x) - sqrt(beta_rel) E_j h_j(x)],
         with E_j = j_j'(k_p a) / j_j(k_p a), does not overflow for a large absorbing sphere,
         where j_j(k_p a) grows as exp|Im(k_p a)|.
@@ -55,11 +55,10 @@ def _series(jmax, x, rho_rel, beta_rel):
     sqrt_beta = np.sqrt(np.asarray(beta_rel, dtype=complex))
     E = special._log_derivative_jn(jmax, sqrt_rho * sqrt_beta * x)
 
-    j = np.arange(jmax + 1).reshape((-1,) + (1,) * np.ndim(x))
-    jx, djx = special.spherical_jn(j, x), special.spherical_jn(j, x, derivative=1)
-    hx, dhx = special.spherical_h1(j, x), special.spherical_h1(j, x, derivative=1)
-
-    return (sqrt_beta * E * jx - sqrt_rho * djx) / (sqrt_rho * dhx - sqrt_beta * E * hx)
+    a = np.empty_like(E)
+    for j, (jx, djx, hx, dhx) in enumerate(special._spherical_orders(jmax, x)):
+        a[j] = (sqrt_beta * E[j] * jx - sqrt_rho * djx) / (sqrt_rho * dhx - sqrt_beta * E[j] * hx)
+    return a
 
 
 def mie_a(j, x, rho_rel, beta_rel):
@@ -183,24 +182,26 @@ def cross_sections(k, a, rho_rel, beta_rel, *, jmin=0, jmax=None, norm='none'):
 
     # the terms above jstop are negligible, and they are nan when h_j overflows
     with np.errstate(all='ignore'):
-        an = np.where((j >= jmin) & (j <= jstop), _series(jmax, x, rho_rel, beta_rel), 0)
+        an = _series(jmax, x, rho_rel, beta_rel)
+    np.copyto(an, 0, where=(j < jmin) | (j > jstop))
 
+    # all the cross sections are divided by sigma_norm
+    sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     w = 2 * j + 1
-    prefactor = 4 * np.pi / k**2
-    sca_j = prefactor * w * np.abs(an)**2
-    ext_j = -prefactor * w * np.real(an)
-    sca, ext = np.sum(sca_j, axis=0), np.sum(ext_j, axis=0)
-
+    prefactor = 4 * np.pi / k**2 / sigma_norm
+    # the sums over j first: their temporaries then do not add to the arrays per multipole
     back = prefactor * np.abs(np.sum(w * (-1)**j * an, axis=0))**2
     # g sca = integral of cos θ |f|^2 over the directions
     g_sca = prefactor * np.sum(2 * (j[:-1] + 1) * np.real(an[:-1] * np.conj(an[1:])), axis=0)
+
+    sca_j = prefactor * w * np.abs(an)**2
+    ext_j = -prefactor * w * np.real(an)
+    sca, ext = np.sum(sca_j, axis=0), np.sum(ext_j, axis=0)
     g = np.divide(g_sca, sca, out=np.zeros(np.shape(sca)), where=sca > 0)
     # [()] gives a NumPy scalar for a scalar input, as np.sum gives for the other totals
     g = g[()]
 
-    sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     return CrossSections(
-        sca=sca / sigma_norm, ext=ext / sigma_norm, abs=(ext - sca) / sigma_norm,
-        pr=(ext - g_sca) / sigma_norm, back=back / sigma_norm, g=g,
-        sca_j=sca_j / sigma_norm, ext_j=ext_j / sigma_norm, abs_j=(ext_j - sca_j) / sigma_norm,
+        sca=sca, ext=ext, abs=ext - sca, pr=ext - g_sca, back=back, g=g,
+        sca_j=sca_j, ext_j=ext_j, abs_j=ext_j - sca_j,
     )

@@ -14,6 +14,15 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - Tests for large absorbing spheres, where j_j overflows inside the sphere:
   the optical efficiencies against miepython 3.3.0, and the acoustic efficiencies against the direct formulas in mpmath with 40 digits.
 
+### Changed
+
+- `optics.cross_sections` and `acoustics.cross_sections` are approximately 40 times faster and use less memory.
+  For a sweep of 400 × 400 sizes up to x = 45, optics takes 2.2 s and 0.82 GB (before: 87 s and 1.85 GB),
+  and acoustics takes 1.2 s and 0.47 GB (before: 59 s and 1.43 GB).
+  The functions of the host argument x now come from one recurrence over j and not from repeated calls to SciPy,
+  and the coefficients are calculated one order at a time.
+  `sca` and `ext` change by less than 1e-13 relative.
+
 ### Fixed
 
 - `optics.cross_sections` and `acoustics.cross_sections` no longer return `nan` for a large absorbing sphere.

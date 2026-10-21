@@ -53,7 +53,7 @@ def _parts(j, x, eps_rel, mu_rel):
 
 def _series(jmax, x, eps_rel, mu_rel):
     """
-        a_j and b_j for the orders j = 0, ..., jmax on axis 0. The form of _parts divided by ψ_j(mx),
+        a_j and b_j for the orders j = 0, ..., jmax on axis 0 and a real x. The form of _parts divided by ψ_j(mx),
             a_j = [s1 ψ_j'(x) - s2 D_j ψ_j(x)] / [s1 ξ_j'(x) - s2 D_j ξ_j(x)],   D_j = ψ_j'(mx) / ψ_j(mx),
         does not overflow for a large absorbing sphere, where ψ_j(mx) grows as exp|Im(mx)|.
         a_0 and b_0 have no meaning.
@@ -61,17 +61,20 @@ def _series(jmax, x, eps_rel, mu_rel):
     sqrt_eps = np.sqrt(np.asarray(eps_rel, dtype=complex))
     sqrt_mu = np.sqrt(np.asarray(mu_rel, dtype=complex))
     mx = sqrt_eps * sqrt_mu * x
-    # ψ_j = z j_j, so ψ_j' / ψ_j = j_j' / j_j + 1/z
-    D = special._log_derivative_jn(jmax, mx) + 1 / mx
+    E = special._log_derivative_jn(jmax, mx)
 
-    j = np.arange(jmax + 1).reshape((-1,) + (1,) * np.ndim(x))
-    psi_x, dpsi_x = special.riccati_psi(j, x), special.riccati_psi(j, x, derivative=1)
-    xi_x, dxi_x = special.riccati_xi(j, x), special.riccati_xi(j, x, derivative=1)
+    a, b = np.empty_like(E), np.empty_like(E)
+    for j, (jn, djn, hn, dhn) in enumerate(special._spherical_orders(jmax, x)):
+        # ψ_j = x j_j and ξ_j = x h_j; ψ_j = z j_j also inside, so D_j = E_j + 1/z
+        psi_x, dpsi_x = x * jn, jn + x * djn
+        xi_x, dxi_x = x * hn, hn + x * dhn
+        D = E[j] + 1 / mx
 
-    def coefficient(s1, s2):
-        return (s1 * dpsi_x - s2 * D * psi_x) / (s1 * dxi_x - s2 * D * xi_x)
+        def coefficient(s1, s2):
+            return (s1 * dpsi_x - s2 * D * psi_x) / (s1 * dxi_x - s2 * D * xi_x)
 
-    return coefficient(sqrt_eps, sqrt_mu), coefficient(sqrt_mu, sqrt_eps)
+        a[j], b[j] = coefficient(sqrt_eps, sqrt_mu), coefficient(sqrt_mu, sqrt_eps)
+    return a, b
 
 
 def mie_a(j, x, eps_rel, mu_rel=1):
@@ -259,30 +262,30 @@ def cross_sections(k, a, eps_rel, mu_rel=1, *, jmin=1, jmax=None, norm='none'):
     # the terms above jstop are negligible, and they are nan when h_j overflows
     with np.errstate(all='ignore'):
         an, bn = _series(jmax, x, eps_rel, mu_rel)
-        use = (j >= max(jmin, 1)) & (j <= jstop)
-        an, bn = np.where(use, an, 0), np.where(use, bn, 0)
+    use = (j >= max(jmin, 1)) & (j <= jstop)
+    np.copyto(an, 0, where=~use)
+    np.copyto(bn, 0, where=~use)
 
+    # all the cross sections are divided by sigma_norm
+    sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     w = 2 * j + 1
-    prefactor = 2 * np.pi / k**2
-    sca_e, sca_m = prefactor * w * np.abs(an)**2, prefactor * w * np.abs(bn)**2
-    ext_e, ext_m = prefactor * w * np.real(an), prefactor * w * np.real(bn)
-    sca, ext = np.sum(sca_e + sca_m, axis=0), np.sum(ext_e + ext_m, axis=0)
-
-    back = np.pi / k**2 * np.abs(np.sum(w * (-1)**j * (an - bn), axis=0))**2
+    prefactor = 2 * np.pi / k**2 / sigma_norm
+    # the sums over j first: their temporaries then do not add to the arrays per multipole
+    back = prefactor / 2 * np.abs(np.sum(w * (-1)**j * (an - bn), axis=0))**2
     # g sca, the sums start at j = 1
     jj = j[1:-1]
     g_sca = 2 * prefactor * (
         np.sum(jj * (jj + 2) / (jj + 1) * np.real(an[1:-1] * np.conj(an[2:]) + bn[1:-1] * np.conj(bn[2:])), axis=0)
         + np.sum((2 * j[1:] + 1) / (j[1:] * (j[1:] + 1)) * np.real(an[1:] * np.conj(bn[1:])), axis=0))
+
+    sca_e, sca_m = prefactor * w * np.abs(an)**2, prefactor * w * np.abs(bn)**2
+    ext_e, ext_m = prefactor * w * np.real(an), prefactor * w * np.real(bn)
+    sca, ext = np.sum(sca_e + sca_m, axis=0), np.sum(ext_e + ext_m, axis=0)
     g = np.divide(g_sca, sca, out=np.zeros(np.shape(sca)), where=sca > 0)
     # [()] gives a NumPy scalar for a scalar input, as np.sum gives for the other totals
     g = g[()]
 
-    sigma_norm = np.pi * a**2 if norm == 'geom' else 1.0
     return CrossSections(
-        sca=sca / sigma_norm, ext=ext / sigma_norm, abs=(ext - sca) / sigma_norm,
-        back=back / sigma_norm, pr=(ext - g_sca) / sigma_norm, g=g,
-        sca_e=sca_e / sigma_norm, sca_m=sca_m / sigma_norm,
-        ext_e=ext_e / sigma_norm, ext_m=ext_m / sigma_norm,
-        abs_e=(ext_e - sca_e) / sigma_norm, abs_m=(ext_m - sca_m) / sigma_norm,
+        sca=sca, ext=ext, abs=ext - sca, back=back, pr=ext - g_sca, g=g,
+        sca_e=sca_e, sca_m=sca_m, ext_e=ext_e, ext_m=ext_m, abs_e=ext_e - sca_e, abs_m=ext_m - sca_m,
     )
