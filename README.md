@@ -53,21 +53,6 @@ gives all the definitions and the formulas that mielib uses.
 Its notation follows the PhD thesis of I. Toftul,
 [*Resonant Metaphotonics: From Optical Manipulation to Chiral Metasurfaces*](https://hdl.handle.net/1885/733812237) (Australian National University, 2026).
 
-The main conventions:
-
-- The time dependence is $e^{-i\omega t}$.
-- The electromagnetic field is the pair $(\sqrt{\varepsilon}\mathbf{E}, \sqrt{\mu}\mathbf{H})$.
-  Thus, the electromagnetic duality is
-
-  ```math
-  \sqrt{\varepsilon}\,\mathbf{E} \to \sqrt{\mu}\,\mathbf{H}, \qquad \sqrt{\mu}\,\mathbf{H} \to -\sqrt{\varepsilon}\,\mathbf{E},
-  ```
-
-  and for a sphere it swaps $a_j$ and $b_j$ when $\varepsilon_\mathrm{rel}$ and $\mu_\mathrm{rel}$ are swapped.
-- The T-matrix is the outgoing amplitude divided by the regular amplitude of the same multipole.
-  In optics, $T^e_j = -a_j$ and $T^m_j = -b_j$, with the $a_j$ and $b_j$ of Bohren & Huffman.
-  In acoustics, $T_j = a_j$.
-
 ## Examples
 
 The [examples](https://github.com/toftul/mielib/tree/main/examples) folder has Jupyter notebooks:
@@ -75,7 +60,7 @@ The [examples](https://github.com/toftul/mielib/tree/main/examples) folder has J
 - [cross_sections.ipynb](https://github.com/toftul/mielib/blob/main/examples/cross_sections.ipynb):
   the cross sections of a sphere and their multipole parts, in optics and in acoustics.
 - [fields.ipynb](https://github.com/toftul/mielib/blob/main/examples/fields.ipynb):
-  the fields near a sphere in a plane wave, the electric and the magnetic fields in optics and the pressure and the velocity in acoustics.
+  the fields for a scattering problem.
 - [harmonics.ipynb](https://github.com/toftul/mielib/blob/main/examples/harmonics.ipynb):
   the vector spherical harmonics, and a plane wave from the harmonics.
 
