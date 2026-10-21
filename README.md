@@ -13,7 +13,7 @@ Python library with many Mie-related functions for optics and acoustics. In part
 
 From [PYPI/mielib](https://pypi.org/project/mielib/):
 ```
-pip install mielib
+pip install --upgrade mielib
 ```
 
 ## Examples
