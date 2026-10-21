@@ -1,0 +1,79 @@
+# Paper figure style.  All defaults: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+#
+# Two widths: single column 3.2 in, double column 6.2 in (figure_style.figure
+# picks one).  One font size everywhere: every *size key below is 'medium',
+# which is font.size, so nothing comes out 'large' by accident.
+
+## size
+figure.figsize:     3.2, 2.5    # single column; double column is 6.2 wide
+figure.dpi:         250
+figure.autolayout:  True        # subplots(layout='constrained') overrides this when asked
+
+## font: one face, one size
+font.size:          7
+font.family:        sans-serif
+# https://askubuntu.com/a/1148258
+font.serif:         DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+font.sans-serif:    Nimbus Sans, Helvetica, Computer Modern Sans Serif, DejaVu Sans, Bitstream Vera Sans, Lucida Grande, Verdana, Geneva, Lucid, Arial, Avant Garde, sans-serif
+font.cursive:       Apple Chancery, Textile, Zapf Chancery, Sand, Script MT, Felipa, Comic Neue, Comic Sans MS, cursive
+font.fantasy:       Chicago, Charcoal, Impact, Western, Humor Sans, xkcd, fantasy
+font.monospace:     DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+
+axes.titlesize:     medium      # matplotlib's default is 'large'
+axes.labelsize:     medium
+xtick.labelsize:    medium
+ytick.labelsize:    medium
+legend.fontsize:    medium
+legend.title_fontsize: medium
+figure.titlesize:   medium
+
+## maths in the text face, so $kx$ and kx look the same
+mathtext.fontset:   custom
+mathtext.rm:        sans
+mathtext.it:        sans:italic
+mathtext.bf:        sans:bold
+axes.formatter.use_mathtext: True
+
+## text stays text in PDF and PS, for editing afterwards
+pdf.fonttype:       42
+ps.fonttype:        42
+
+## axes
+axes.xmargin:       0           # no x margins
+#axes.ymargin:      0
+axes.linewidth:     0.5         # default 0.8
+
+## colours: Okabe-Ito, colour-blind safe, in a fixed order
+axes.prop_cycle:    cycler('color', ['0072B2', 'D55E00', '009E73', 'CC79A7', 'E69F00', '56B4E9', 'F0E442', '000000'])
+
+## ticks
+xtick.major.size:   2.5         # default 3.5
+xtick.major.width:  0.5         # default 0.8
+ytick.major.size:   2.5
+ytick.major.width:  0.5
+#xtick.direction:   in
+#ytick.direction:   in
+#xtick.top:         True
+#ytick.right:       True
+
+## lines
+lines.linewidth:    1.2         # default 1.5, heavy at 7 pt
+
+## legend
+legend.framealpha:  0.6
+legend.fancybox:    False
+legend.edgecolor:   none
+legend.handlelength: 1.6
+legend.columnspacing: 0.8
+
+## images
+image.aspect:       auto
+image.cmap:         inferno
+
+## saving: use virtually all the space when the size is specified
+savefig.bbox:       tight
+savefig.pad_inches: 0.01
+savefig.dpi:        250
+
+## LaTeX, when text.usetex is switched on
+text.latex.preamble: \usepackage{amsmath} \usepackage{amssymb} \usepackage{sfmath}
