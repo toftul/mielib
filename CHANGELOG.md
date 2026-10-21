@@ -6,6 +6,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-21
+
 This release changes the API and does not keep the old names.
 The table in "Migration from 0.2" gives the new call for each old call.
 
@@ -182,7 +184,8 @@ The table in "Migration from 0.2" gives the new call for each old call.
 This is the last release before this changelog.
 For older changes, see the git history.
 
-[Unreleased]: https://github.com/toftul/mielib/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/toftul/mielib/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/toftul/mielib/compare/0.2.1...0.3.0
 [0.2.1]: https://github.com/toftul/mielib/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/toftul/mielib/compare/0.1.12...0.2.0
 [0.1.12]: https://github.com/toftul/mielib/releases/tag/0.1.12
