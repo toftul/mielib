@@ -25,6 +25,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - The GitHub Actions workflow also runs the example notebooks with [nbmake](https://github.com/treebeardtech/nbmake).
   A notebook fails when a cell raises an error, for example after a change of the API.
   To run the notebooks locally, use `pip install nbmake matplotlib` and then `pytest --nbmake examples`.
+- `examples/figure_style.py` no longer looks for the style file in a private folder of the author.
+  It uses only the copy in `examples/`. The notebooks no longer show the local path of the style file.
 
 ### Fixed
 

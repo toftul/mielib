@@ -24,7 +24,7 @@ ASPECT = 0.78                                    # default height/width of one p
 def find_style(project_dir='.'):
     """The project's style file, looked for upward from ``project_dir``.
 
-    If none is found, the copy bundled with this skill is written into
+    If none is found, the copy next to this module is written into
     ``project_dir`` so the project owns it from then on.
     """
     here = Path(project_dir).resolve()
@@ -32,14 +32,12 @@ def find_style(project_dir='.'):
         candidate = folder/STYLE_NAME
         if candidate.exists():
             return candidate
-    bundled = [Path(__file__).resolve().parent/STYLE_NAME,
-               Path.home()/'.claude'/'skills'/'sk-fig'/STYLE_NAME]
-    for source in bundled:
-        if source.exists():
-            target = here/STYLE_NAME
-            shutil.copy(source, target)
-            print(f'no {STYLE_NAME} in the project: created {target}')
-            return target
+    source = Path(__file__).resolve().parent/STYLE_NAME
+    if source.exists():
+        target = here/STYLE_NAME
+        shutil.copy(source, target)
+        print(f'no {STYLE_NAME} in the project: created {target}')
+        return target
     return None
 
 
