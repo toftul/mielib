@@ -6,6 +6,11 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- The optics part of `examples/fields.ipynb` uses the complex vector spherical harmonics `vsh.N` and `vsh.M`
+  with the coefficients a_j, b_j, c_j and d_j, and a lossless sphere with ε_rel = 12 and μ_rel = 4.
+
 ## [0.3.2] - 2026-10-21
 
 ### Added
