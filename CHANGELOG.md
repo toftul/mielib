@@ -22,6 +22,9 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   The functions of the host argument x now come from one recurrence over j and not from repeated calls to SciPy,
   and the coefficients are calculated one order at a time.
   `sca` and `ext` change by less than 1e-13 relative.
+- The GitHub Actions workflow also runs the example notebooks with [nbmake](https://github.com/treebeardtech/nbmake).
+  A notebook fails when a cell raises an error, for example after a change of the API.
+  To run the notebooks locally, use `pip install nbmake matplotlib` and then `pytest --nbmake examples`.
 
 ### Fixed
 
