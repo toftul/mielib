@@ -27,6 +27,8 @@ The version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.
   To run the notebooks locally, use `pip install nbmake matplotlib` and then `pytest --nbmake examples`.
 - `examples/figure_style.py` no longer looks for the style file in a private folder of the author.
   It uses only the copy in `examples/`. The notebooks no longer show the local path of the style file.
+- The README writes the formulas in LaTeX, which GitHub renders, and it defines the relative parameters
+  $\varepsilon_\mathrm{rel}$, $\mu_\mathrm{rel}$, $\rho_\mathrm{rel}$ and $\beta_\mathrm{rel}$.
 
 ### Fixed
 

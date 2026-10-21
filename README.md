@@ -12,7 +12,7 @@ and for the vector spherical harmonics.
   The same functions as in optics.
 - Cross sections in both physics: scattering, extinction, absorption, backscattering, radiation pressure,
   the asymmetry parameter, and the part of each multipole.
-- `mielib.vsh`: the complex vector spherical harmonics M, N, L, the harmonic X of Jackson,
+- `mielib.vsh`: the complex vector spherical harmonics $\mathbf{M}$, $\mathbf{N}$, $\mathbf{L}$, the harmonic $\mathbf{X}$ of Jackson,
   and the real harmonics of Bohren & Huffman.
 - `mielib.special`: spherical Bessel, Hankel and Riccati–Bessel functions with their first and second derivatives.
 - `mielib.coordinates`: spherical and cylindrical coordinates, and the components of vector fields in them.
@@ -40,8 +40,10 @@ q.sca, q.ext, q.abs                   # cross sections divided by pi a^2
 q.sca_e[1], q.sca_m[1]                # the electric and the magnetic dipole parts of q.sca
 ```
 
-All the Mie functions take the size parameter `x = k a` in the host and the parameters of the particle relative to the host,
-for example `optics.mie_a(j, x, eps_rel, mu_rel)` and `acoustics.mie_a(j, x, rho_rel, beta_rel)`.
+All the Mie functions take the size parameter $x = ka$ in the host and the parameters of the particle relative to the host:
+$\varepsilon_\mathrm{rel} = \varepsilon_p / \varepsilon_h$ and $\mu_\mathrm{rel} = \mu_p / \mu_h$ in optics,
+the density $\rho_\mathrm{rel}$ and the compressibility $\beta_\mathrm{rel}$ in acoustics.
+For example, `optics.mie_a(j, x, eps_rel, mu_rel)` and `acoustics.mie_a(j, x, rho_rel, beta_rel)`.
 The harmonics take the indices in the order `(j, m)`, for example `vsh.N(j, m, rho, theta, phi, superscript=1)`.
 
 ## Theory
@@ -53,13 +55,18 @@ Its notation follows the PhD thesis of I. Toftul,
 
 The main conventions:
 
-- The time dependence is exp(−iωt).
-- The electromagnetic field is the pair (√ε **E**, √μ **H**).
-  Thus, the electromagnetic duality is √ε **E** → √μ **H**, √μ **H** → −√ε **E**,
-  and for a sphere it swaps a_j and b_j when ε_rel and μ_rel are swapped.
+- The time dependence is $e^{-i\omega t}$.
+- The electromagnetic field is the pair $(\sqrt{\varepsilon}\mathbf{E}, \sqrt{\mu}\mathbf{H})$.
+  Thus, the electromagnetic duality is
+
+  ```math
+  \sqrt{\varepsilon}\,\mathbf{E} \to \sqrt{\mu}\,\mathbf{H}, \qquad \sqrt{\mu}\,\mathbf{H} \to -\sqrt{\varepsilon}\,\mathbf{E},
+  ```
+
+  and for a sphere it swaps $a_j$ and $b_j$ when $\varepsilon_\mathrm{rel}$ and $\mu_\mathrm{rel}$ are swapped.
 - The T-matrix is the outgoing amplitude divided by the regular amplitude of the same multipole.
-  In optics, T^e_j = −a_j and T^m_j = −b_j, with the a_j and b_j of Bohren & Huffman.
-  In acoustics, T_j = a_j.
+  In optics, $T^e_j = -a_j$ and $T^m_j = -b_j$, with the $a_j$ and $b_j$ of Bohren & Huffman.
+  In acoustics, $T_j = a_j$.
 
 ## Examples
 
